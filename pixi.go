@@ -2,15 +2,15 @@ package main
 
 import (
 	"./dirlist"
-	"github.com/gizak/termui"
+	ui "github.com/gizak/termui"
 )
 
 func main() {
-	err := termui.Init()
+	err := ui.Init()
 	if err != nil {
 		panic(err)
 	}
-	defer termui.Close()
+	defer ui.Close()
 
 	dirlist.Init()
 
@@ -18,42 +18,42 @@ func main() {
 
 	setupEvents()
 
-	termui.Loop()
+	ui.Loop()
 
 }
 
 func setupEvents() {
-	termui.Handle("/sys/kbd/q", func(termui.Event) {
-		termui.StopLoop()
+	ui.Handle("/sys/kbd/q", func(ui.Event) {
+		ui.StopLoop()
 	})
 
-	termui.Handle("/sys/kbd/<escape>", func(termui.Event) {
-		termui.StopLoop()
+	ui.Handle("/sys/kbd/<escape>", func(ui.Event) {
+		ui.StopLoop()
 	})
 
-	termui.Handle("/sys/kbd/C-c", func(termui.Event) {
-		termui.StopLoop()
+	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
+		ui.StopLoop()
 	})
 
-	termui.Handle("/sys/kbd/<up>", func(termui.Event) {
+	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
 		dirlist.SelectPrevElement()
 		renderList(dirlist.GetPrettyList())
 	})
 
-	termui.Handle("/sys/kbd/<down>", func(termui.Event) {
+	ui.Handle("/sys/kbd/<down>", func(ui.Event) {
 		dirlist.SelectNextElement()
 		renderList(dirlist.GetPrettyList())
 	})
 }
 
 func renderList(dirList []string) {
-	ls := termui.NewList()
+	ls := ui.NewList()
 	ls.Items = dirList
-	ls.ItemFgColor = termui.ColorYellow
+	ls.ItemFgColor = ui.ColorYellow
 	ls.BorderLabel = "Files"
 	ls.Height = 20
 	ls.Width = 70
 	ls.Y = 0
 
-	termui.Render(ls)
+	ui.Render(ls)
 }
