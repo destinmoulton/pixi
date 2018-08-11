@@ -5,6 +5,9 @@ import (
 	ui "github.com/gizak/termui"
 )
 
+var uiFileList = ui.NewList()
+var uiStatusBar = ui.NewPar("Status Bar")
+
 func main() {
 	err := ui.Init()
 	if err != nil {
@@ -37,23 +40,35 @@ func setupEvents() {
 
 	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
 		dirlist.SelectPrevElement()
-		renderList(dirlist.GetPrettyList())
+		updateFileList(dirlist.GetPrettyList())
 	})
 
 	ui.Handle("/sys/kbd/<down>", func(ui.Event) {
 		dirlist.SelectNextElement()
-		renderList(dirlist.GetPrettyList())
+		updateFileList(dirlist.GetPrettyList())
 	})
 }
 
-func renderList(dirList []string) {
-	ls := ui.NewList()
-	ls.Items = dirList
-	ls.ItemFgColor = ui.ColorYellow
-	ls.BorderLabel = "Files"
-	ls.Height = 20
-	ls.Width = 70
-	ls.Y = 0
+func updateFileList(dirList []string) {
 
-	ui.Render(ls)
+	uiFileList.Items = dirList
+	ui.Render(ui.Body)
+}
+
+func renderList(dirList []string) {
+
+	uiFileList.Items = dirList
+	uiFileList.ItemFgColor = ui.ColorYellow
+	uiFileList.BorderLabel = "Files"
+	uiFileList.Height = ui.TermHeight() - 3
+
+	uiStatusBar.Height = 3
+	uiStatusBar.Text = "Status bar here"
+
+	ui.Body.AddRows(
+		ui.NewRow(ui.NewCol(12, 0, uiFileList)),
+		ui.NewRow(ui.NewCol(12, 0, uiStatusBar)))
+
+	ui.Body.Align()
+	ui.Render(ui.Body)
 }
