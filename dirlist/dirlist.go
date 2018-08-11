@@ -5,17 +5,27 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 )
 
 var dirListFileInfo []os.FileInfo
 var dirListPrettyNames []string
 var selectedElementIndex int
-var currentPath = "."
+var currentPath string
+var termWidth int
 var outputStatusMessage func(string)
 
 // Init initializes the dirlist
-func Init(statusMessageHandler func(string)) {
+func Init(width int, statusMessageHandler func(string)) {
+	termWidth = width
 	outputStatusMessage = statusMessageHandler
+
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	currentPath = dir
 	PopulateDirList()
 }
 
@@ -57,7 +67,6 @@ func SelectPrevElement() {
 	if selectedElementIndex > 0 {
 		selectedElementIndex--
 	}
-	outputStatusMessage(fmt.Sprintf("%v", selectedElementIndex))
 }
 
 // SelectNextElement switches to the next element
@@ -66,7 +75,6 @@ func SelectNextElement() {
 	if selectedElementIndex < (len(dirListFileInfo) - 1) {
 		selectedElementIndex++
 	}
-	outputStatusMessage(fmt.Sprintf("%v", selectedElementIndex))
 }
 
 func colorifyDirList() {
@@ -89,7 +97,8 @@ func colorifyDirList() {
 
 		}
 
-		prettyName := fmt.Sprintf("[%-65s](%s,%s)", file.Name(), fgColor, bgColor)
+		formatString := "[%-" + strconv.Itoa(termWidth-3) + "s](%s,%s)"
+		prettyName := fmt.Sprintf(formatString, file.Name(), fgColor, bgColor)
 
 		dirListPrettyNames = append(dirListPrettyNames, prettyName)
 	}

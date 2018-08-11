@@ -15,7 +15,7 @@ func main() {
 	}
 	defer ui.Close()
 
-	dirlist.Init(updateStatusMessage)
+	dirlist.Init(ui.TermWidth(), updateStatusMessage)
 
 	renderList(dirlist.GetPrettyList())
 
