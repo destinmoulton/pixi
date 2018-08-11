@@ -20,13 +20,27 @@ func Init() {
 // PopulateDirList builds the list of elements
 // in the selected path
 func PopulateDirList() {
+	dirListFileInfo = []os.FileInfo{}
 	selectedElementIndex = 0
 	dirList, err := ioutil.ReadDir(currentPath)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	dirListFileInfo = dirList
+
+	dirs := []os.FileInfo{}
+	files := []os.FileInfo{}
+	for _, file := range dirList {
+		if file.IsDir() {
+			dirs = append(dirs, file)
+		} else {
+			files = append(files, file)
+		}
+	}
+
+	// Directories first, files after
+	dirListFileInfo = append(dirListFileInfo, dirs...)
+	dirListFileInfo = append(dirListFileInfo, files...)
 }
 
 // GetPrettyList gets the current
