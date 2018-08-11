@@ -104,7 +104,7 @@ func PerformFileAction() {
 }
 
 func runVideoPlayer(selectedFilePath string) {
-	cmd := exec.Command("omxplayer", "-b", selectedFilePath)
+	cmd := exec.Command("xterm", "-e", "omxplayer", "-b", selectedFilePath)
 	err := cmd.Run()
 
 	if err != nil {
