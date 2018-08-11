@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"strconv"
 )
 
@@ -75,6 +76,33 @@ func SelectNextElement() {
 	if selectedElementIndex < (len(dirListFileInfo) - 1) {
 		selectedElementIndex++
 	}
+}
+
+// NavUpDirectory navigates up to the parent directory
+func NavUpDirectory() {
+	path := path.Clean(currentPath + "/../")
+
+	setCurrentPath(path)
+	PopulateDirList()
+}
+
+// PerformFileAction either opens the dir or opens
+// the selected file
+func PerformFileAction() {
+	selectedFile := dirListFileInfo[selectedElementIndex]
+	if selectedFile.IsDir() {
+		path := path.Join(currentPath, selectedFile.Name())
+		outputStatusMessage(path)
+		setCurrentPath(path)
+		PopulateDirList()
+	} else {
+
+	}
+	outputStatusMessage(selectedFile.Name())
+}
+
+func setCurrentPath(path string) {
+	currentPath = path
 }
 
 func colorifyDirList() {

@@ -47,6 +47,16 @@ func setupEvents() {
 		dirlist.SelectNextElement()
 		updateFileList(dirlist.GetPrettyList())
 	})
+
+	ui.Handle("/sys/kbd/<left>", func(ui.Event) {
+		dirlist.NavUpDirectory()
+		updateFileList(dirlist.GetPrettyList())
+	})
+
+	ui.Handle("/sys/kbd/<right>", func(ui.Event) {
+		dirlist.PerformFileAction()
+		updateFileList(dirlist.GetPrettyList())
+	})
 }
 
 func updateStatusMessage(text string) {
