@@ -6,7 +6,7 @@ import (
 )
 
 var uiFileList = ui.NewList()
-var uiStatusBar = ui.NewPar("Status Bar")
+var uiStatusBar = ui.NewPar("")
 
 func main() {
 	err := ui.Init()
@@ -15,7 +15,7 @@ func main() {
 	}
 	defer ui.Close()
 
-	dirlist.Init()
+	dirlist.Init(updateStatusMessage)
 
 	renderList(dirlist.GetPrettyList())
 
@@ -49,6 +49,11 @@ func setupEvents() {
 	})
 }
 
+func updateStatusMessage(text string) {
+	uiStatusBar.Text = text
+	ui.Render(ui.Body)
+}
+
 func updateFileList(dirList []string) {
 
 	uiFileList.Items = dirList
@@ -63,7 +68,7 @@ func renderList(dirList []string) {
 	uiFileList.Height = ui.TermHeight() - 3
 
 	uiStatusBar.Height = 3
-	uiStatusBar.Text = "Status bar here"
+	uiStatusBar.Text = ""
 
 	ui.Body.AddRows(
 		ui.NewRow(ui.NewCol(12, 0, uiFileList)),

@@ -11,9 +11,11 @@ var dirListFileInfo []os.FileInfo
 var dirListPrettyNames []string
 var selectedElementIndex int
 var currentPath = "."
+var outputStatusMessage func(string)
 
 // Init initializes the dirlist
-func Init() {
+func Init(statusMessageHandler func(string)) {
+	outputStatusMessage = statusMessageHandler
 	PopulateDirList()
 }
 
@@ -52,17 +54,19 @@ func GetPrettyList() []string {
 // SelectPrevElement switches to the previous element
 // in DirList
 func SelectPrevElement() {
-	if selectedElementIndex >= 0 {
+	if selectedElementIndex > 0 {
 		selectedElementIndex--
 	}
+	outputStatusMessage(fmt.Sprintf("%v", selectedElementIndex))
 }
 
 // SelectNextElement switches to the next element
 // in DirList
 func SelectNextElement() {
-	if selectedElementIndex <= (len(dirListFileInfo) - 1) {
+	if selectedElementIndex < (len(dirListFileInfo) - 1) {
 		selectedElementIndex++
 	}
+	outputStatusMessage(fmt.Sprintf("%v", selectedElementIndex))
 }
 
 func colorifyDirList() {
