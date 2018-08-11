@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 	"strconv"
 )
@@ -90,15 +91,25 @@ func NavUpDirectory() {
 // the selected file
 func PerformFileAction() {
 	selectedFile := dirListFileInfo[selectedElementIndex]
+	path := path.Join(currentPath, selectedFile.Name())
 	if selectedFile.IsDir() {
-		path := path.Join(currentPath, selectedFile.Name())
+
 		outputStatusMessage(path)
 		setCurrentPath(path)
 		PopulateDirList()
 	} else {
-
+		runVideoPlayer(path)
 	}
 	outputStatusMessage(selectedFile.Name())
+}
+
+func runVideoPlayer(selectedFilePath string) {
+	cmd := exec.Command("omxplayer", "-b", selectedFilePath)
+	err := cmd.Run()
+
+	if err != nil {
+
+	}
 }
 
 func setCurrentPath(path string) {
