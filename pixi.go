@@ -1,12 +1,16 @@
 package main
 
 import (
-	"./dirlist"
 	ui "github.com/gizak/termui"
+
+	"./dirlist"
+	"./types"
 )
 
-var uiFileList = ui.NewList()
-var uiStatusBar = ui.NewPar("")
+var widgetFileList = ui.NewList()
+var widgetStatusBar = ui.NewPar("")
+
+var widgetFileListDimensions types.WidgetDimensions
 
 func main() {
 	err := ui.Init()
@@ -15,7 +19,9 @@ func main() {
 	}
 	defer ui.Close()
 
-	dirlist.Init(ui.TermWidth(), updateStatusMessage)
+	widgetFileListDimensions.Width = ui.TermWidth()
+	widgetFileListDimensions.Height = ui.TermHeight() - 3
+	dirlist.Init(widgetFileListDimensions, updateStatusMessage)
 
 	renderList(dirlist.GetPrettyList())
 
@@ -60,29 +66,29 @@ func setupEvents() {
 }
 
 func updateStatusMessage(text string) {
-	uiStatusBar.Text = text
+	widgetStatusBar.Text = text
 	ui.Render(ui.Body)
 }
 
 func updateFileList(dirList []string) {
 
-	uiFileList.Items = dirList
+	widgetFileList.Items = dirList
 	ui.Render(ui.Body)
 }
 
 func renderList(dirList []string) {
 
-	uiFileList.Items = dirList
-	uiFileList.ItemFgColor = ui.ColorYellow
-	uiFileList.BorderLabel = "Files"
-	uiFileList.Height = ui.TermHeight() - 3
+	widgetFileList.Items = dirList
+	widgetFileList.ItemFgColor = ui.ColorYellow
+	widgetFileList.BorderLabel = "Files"
+	widgetFileList.Height = widgetFileListDimensions.Height
 
-	uiStatusBar.Height = 3
-	uiStatusBar.Text = ""
+	widgetStatusBar.Height = 3
+	widgetStatusBar.Text = ""
 
 	ui.Body.AddRows(
-		ui.NewRow(ui.NewCol(12, 0, uiFileList)),
-		ui.NewRow(ui.NewCol(12, 0, uiStatusBar)))
+		ui.NewRow(ui.NewCol(12, 0, widgetFileList)),
+		ui.NewRow(ui.NewCol(12, 0, widgetStatusBar)))
 
 	ui.Body.Align()
 	ui.Render(ui.Body)

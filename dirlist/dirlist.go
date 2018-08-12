@@ -8,18 +8,21 @@ import (
 	"os/exec"
 	"path"
 	"strconv"
+
+	"../types"
 )
 
 var dirListFileInfo []os.FileInfo
 var dirListPrettyNames []string
 var selectedElementIndex int
 var currentPath string
-var termWidth int
 var outputStatusMessage func(string)
 
+var widgetDimensions types.WidgetDimensions
+
 // Init initializes the dirlist
-func Init(width int, statusMessageHandler func(string)) {
-	termWidth = width
+func Init(widgetDim types.WidgetDimensions, statusMessageHandler func(string)) {
+	widgetDimensions = widgetDim
 	outputStatusMessage = statusMessageHandler
 
 	dir, err := os.Getwd()
@@ -127,16 +130,15 @@ func colorifyDirList() {
 		}
 
 		if file.IsDir() {
-
 			fgColor = "fg-blue"
 			if selectedElementIndex == idx {
 				bgColor = "bg-blue"
 				fgColor = "fg-white"
 			}
-
 		}
 
-		formatString := "[%-" + strconv.Itoa(termWidth-3) + "s](%s,%s)"
+		// Pad the width of the filename
+		formatString := "[%-" + strconv.Itoa(widgetDimensions.Width-3) + "s](%s,%s)"
 		prettyName := fmt.Sprintf(formatString, file.Name(), fgColor, bgColor)
 
 		dirListPrettyNames = append(dirListPrettyNames, prettyName)
