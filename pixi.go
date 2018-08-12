@@ -28,7 +28,6 @@ func main() {
 	setupEvents()
 
 	ui.Loop()
-
 }
 
 func setupEvents() {

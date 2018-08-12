@@ -12,18 +12,24 @@ import (
 	"../types"
 )
 
+var currentPath string
 var dirListFileInfo []os.FileInfo
 var dirListPrettyNames []string
-var selectedElementIndex int
-var currentPath string
 var outputStatusMessage func(string)
-
+var visibleList struct {
+	maxNumberVisible int
+	beginIndex       int
+	endIndex         int
+	selectedIndex    int
+}
 var widgetDimensions types.WidgetDimensions
 
 // Init initializes the dirlist
 func Init(widgetDim types.WidgetDimensions, statusMessageHandler func(string)) {
 	widgetDimensions = widgetDim
 	outputStatusMessage = statusMessageHandler
+
+	visibleList.maxNumberVisible = widgetDim.Height - 2
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -38,9 +44,8 @@ func Init(widgetDim types.WidgetDimensions, statusMessageHandler func(string)) {
 // in the selected path
 func PopulateDirList() {
 	dirListFileInfo = []os.FileInfo{}
-	selectedElementIndex = 0
-	dirList, err := ioutil.ReadDir(currentPath)
 
+	dirList, err := ioutil.ReadDir(currentPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,6 +63,15 @@ func PopulateDirList() {
 	// Directories first, files after
 	dirListFileInfo = append(dirListFileInfo, dirs...)
 	dirListFileInfo = append(dirListFileInfo, files...)
+
+	// Setup the visible list
+	visibleList.selectedIndex = 0
+	visibleList.beginIndex = 0
+	if len(dirListFileInfo) > visibleList.maxNumberVisible {
+		visibleList.endIndex = visibleList.maxNumberVisible - 1
+	} else {
+		visibleList.endIndex = len(dirListFileInfo) - 1
+	}
 }
 
 // GetPrettyList gets the current
@@ -69,17 +83,32 @@ func GetPrettyList() []string {
 // SelectPrevElement switches to the previous element
 // in DirList
 func SelectPrevElement() {
-	if selectedElementIndex > 0 {
-		selectedElementIndex--
+	if visibleList.selectedIndex > 0 {
+		visibleList.selectedIndex--
+	} else if visibleList.selectedIndex == 0 {
+		if visibleList.beginIndex > 0 {
+			// Move the visible "fame" up
+			visibleList.beginIndex--
+			visibleList.endIndex--
+		}
 	}
+	outputStatusMessage(fmt.Sprintf("selectedIndex=%v, beginIndex=%v, endIndex=%v", visibleList.selectedIndex, visibleList.beginIndex, visibleList.endIndex))
 }
 
 // SelectNextElement switches to the next element
 // in DirList
 func SelectNextElement() {
-	if selectedElementIndex < (len(dirListFileInfo) - 1) {
-		selectedElementIndex++
+	frameEndIndex := visibleList.endIndex - visibleList.beginIndex
+	if visibleList.selectedIndex < frameEndIndex {
+		visibleList.selectedIndex++
+	} else if visibleList.selectedIndex == frameEndIndex {
+		if visibleList.endIndex < (len(dirListFileInfo) - 1) {
+			// Move the visible "frame" down
+			visibleList.beginIndex++
+			visibleList.endIndex++
+		}
 	}
+	outputStatusMessage(fmt.Sprintf("selectedIndex=%v, beginIndex=%v, endIndex=%v", visibleList.selectedIndex, visibleList.beginIndex, visibleList.endIndex))
 }
 
 // NavUpDirectory navigates up to the parent directory
@@ -93,7 +122,8 @@ func NavUpDirectory() {
 // PerformFileAction either opens the dir or opens
 // the selected file
 func PerformFileAction() {
-	selectedFile := dirListFileInfo[selectedElementIndex]
+	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
+	selectedFile := visibleFilesInfo[visibleList.selectedIndex]
 	path := path.Join(currentPath, selectedFile.Name())
 	if selectedFile.IsDir() {
 
@@ -121,17 +151,18 @@ func setCurrentPath(path string) {
 
 func colorifyDirList() {
 	dirListPrettyNames = []string{}
-	for idx, file := range dirListFileInfo {
+	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
+	for idx, file := range visibleFilesInfo {
 		fgColor := "fg-white"
 		bgColor := ""
 
-		if selectedElementIndex == idx {
+		if visibleList.selectedIndex == idx {
 			bgColor = "bg-green"
 		}
 
 		if file.IsDir() {
 			fgColor = "fg-blue"
-			if selectedElementIndex == idx {
+			if visibleList.selectedIndex == idx {
 				bgColor = "bg-blue"
 				fgColor = "fg-white"
 			}
