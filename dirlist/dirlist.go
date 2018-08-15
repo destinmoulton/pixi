@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -53,6 +54,9 @@ func PopulateDirList() {
 	dirListFileInfo = []os.FileInfo{}
 
 	dirList, err := ioutil.ReadDir(currentPath)
+
+	sort.Sort(SortByLowerCaseFilename(dirList))
+
 	if err != nil {
 		log.Fatal(err)
 	}
