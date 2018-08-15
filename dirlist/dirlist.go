@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path"
 	"strconv"
+	"strings"
 
 	"github.com/novalagung/gubrak"
 
@@ -26,6 +27,7 @@ var visibleList struct {
 	selectedIndex    int
 }
 var widgetDimensions types.WidgetDimensions
+var shouldShowHidden = false
 
 // Init initializes the dirlist
 func Init(widgetDim types.WidgetDimensions, pathBarHandler func(string), statusMessageHandler func(string)) {
@@ -58,10 +60,16 @@ func PopulateDirList() {
 	dirs := []os.FileInfo{}
 	files := []os.FileInfo{}
 	for _, file := range dirList {
-		if file.IsDir() {
-			dirs = append(dirs, file)
-		} else {
-			files = append(files, file)
+		filename := file.Name()
+
+		isHiddenFile := strings.HasPrefix(filename, ".")
+		if (isHiddenFile && shouldShowHidden) || (!isHiddenFile) {
+
+			if file.IsDir() {
+				dirs = append(dirs, file)
+			} else {
+				files = append(files, file)
+			}
 		}
 	}
 
@@ -137,6 +145,12 @@ func PerformFileAction() {
 	} else {
 		runVideoPlayer(path)
 	}
+}
+
+// ToggleHidden enables/disables showing the hidden files (.<filename>)
+func ToggleHidden() {
+	shouldShowHidden = !shouldShowHidden
+	PopulateDirList()
 }
 
 func runVideoPlayer(selectedFilePath string) {

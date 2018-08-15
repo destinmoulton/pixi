@@ -43,6 +43,11 @@ func setupEvents() {
 		ui.StopLoop()
 	})
 
+	ui.Handle("/sys/kbd/.", func(ui.Event) {
+		dirlist.ToggleHidden()
+		updateFileList(dirlist.GetPrettyList())
+	})
+
 	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
 		dirlist.SelectPrevElement()
 		updateFileList(dirlist.GetPrettyList())
