@@ -9,6 +9,8 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/novalagung/gubrak"
+
 	"../types"
 )
 
@@ -92,7 +94,7 @@ func SelectPrevElement() {
 			visibleList.endIndex--
 		}
 	}
-	outputStatusMessage(fmt.Sprintf("selectedIndex=%v, beginIndex=%v, endIndex=%v", visibleList.selectedIndex, visibleList.beginIndex, visibleList.endIndex))
+
 }
 
 // SelectNextElement switches to the next element
@@ -108,7 +110,6 @@ func SelectNextElement() {
 			visibleList.endIndex++
 		}
 	}
-	outputStatusMessage(fmt.Sprintf("selectedIndex=%v, beginIndex=%v, endIndex=%v", visibleList.selectedIndex, visibleList.beginIndex, visibleList.endIndex))
 }
 
 // NavUpDirectory navigates up to the parent directory
@@ -133,7 +134,6 @@ func PerformFileAction() {
 	} else {
 		runVideoPlayer(path)
 	}
-	outputStatusMessage(selectedFile.Name())
 }
 
 func runVideoPlayer(selectedFilePath string) {
@@ -155,22 +155,27 @@ func colorifyDirList() {
 	for idx, file := range visibleFilesInfo {
 		fgColor := "fg-white"
 		bgColor := ""
+		prefix := ""
 
 		if visibleList.selectedIndex == idx {
 			bgColor = "bg-green"
 		}
 
 		if file.IsDir() {
-			fgColor = "fg-blue"
+			fgColor = "fg-yellow"
 			if visibleList.selectedIndex == idx {
 				bgColor = "bg-blue"
 				fgColor = "fg-white"
 			}
 		}
-
+		//outputStatusMessage(path.Ext(file.Name()))
+		if res, _ := gubrak.Includes(filetypesAllowedVideoFiles, path.Ext(file.Name())); res == true {
+			prefix = "[>] "
+		}
 		// Pad the width of the filename
+		filename := prefix + file.Name()
 		formatString := "[%-" + strconv.Itoa(widgetDimensions.Width-3) + "s](%s,%s)"
-		prettyName := fmt.Sprintf(formatString, file.Name(), fgColor, bgColor)
+		prettyName := fmt.Sprintf(formatString, filename, fgColor, bgColor)
 
 		dirListPrettyNames = append(dirListPrettyNames, prettyName)
 	}
