@@ -17,6 +17,7 @@ import (
 var currentPath string
 var dirListFileInfo []os.FileInfo
 var dirListPrettyNames []string
+var pathBar func(string)
 var outputStatusMessage func(string)
 var visibleList struct {
 	maxNumberVisible int
@@ -27,8 +28,9 @@ var visibleList struct {
 var widgetDimensions types.WidgetDimensions
 
 // Init initializes the dirlist
-func Init(widgetDim types.WidgetDimensions, statusMessageHandler func(string)) {
+func Init(widgetDim types.WidgetDimensions, pathBarHandler func(string), statusMessageHandler func(string)) {
 	widgetDimensions = widgetDim
+	pathBar = pathBarHandler
 	outputStatusMessage = statusMessageHandler
 
 	visibleList.maxNumberVisible = widgetDim.Height - 2
@@ -39,6 +41,7 @@ func Init(widgetDim types.WidgetDimensions, statusMessageHandler func(string)) {
 	}
 
 	currentPath = dir
+	pathBar(currentPath)
 	PopulateDirList()
 }
 
@@ -117,6 +120,7 @@ func NavUpDirectory() {
 	path := path.Clean(currentPath + "/../")
 
 	setCurrentPath(path)
+	pathBar(path)
 	PopulateDirList()
 }
 
@@ -127,10 +131,9 @@ func PerformFileAction() {
 	selectedFile := visibleFilesInfo[visibleList.selectedIndex]
 	path := path.Join(currentPath, selectedFile.Name())
 	if selectedFile.IsDir() {
-
-		outputStatusMessage(path)
 		setCurrentPath(path)
 		PopulateDirList()
+		pathBar(currentPath)
 	} else {
 		runVideoPlayer(path)
 	}

@@ -21,7 +21,7 @@ func main() {
 
 	widgetFileListDimensions.Width = ui.TermWidth()
 	widgetFileListDimensions.Height = ui.TermHeight() - 3
-	dirlist.Init(widgetFileListDimensions, updateStatusMessage)
+	dirlist.Init(widgetFileListDimensions, updatePathBar, updateStatusMessage)
 
 	renderList(dirlist.GetPrettyList())
 
@@ -74,8 +74,12 @@ func updateStatusMessage(text string) {
 	ui.Render(ui.Body)
 }
 
-func updateFileList(dirList []string) {
+func updatePathBar(path string) {
+	widgetFileList.BorderLabel = path + " "
+	ui.Render(ui.Body)
+}
 
+func updateFileList(dirList []string) {
 	widgetFileList.Items = dirList
 	ui.Render(ui.Body)
 }
@@ -84,7 +88,6 @@ func renderList(dirList []string) {
 
 	widgetFileList.Items = dirList
 	widgetFileList.ItemFgColor = ui.ColorYellow
-	widgetFileList.BorderLabel = "Files"
 	widgetFileList.Height = widgetFileListDimensions.Height
 
 	widgetStatusBar.Height = 3
