@@ -1,4 +1,4 @@
-package dirlist
+package explorer
 
 import (
 	"os"

@@ -1,8 +1,9 @@
 package gui
 
 import (
-	"../dirlist"
 	ui "github.com/gizak/termui"
+
+	"./explorer"
 )
 
 // setupEvents creates the termui event handlers
@@ -16,32 +17,26 @@ func setupEvents() {
 	})
 
 	ui.Handle("/sys/kbd/.", func(ui.Event) {
-		dirlist.ToggleHidden()
-		updateFileList()
+		explorer.ToggleHidden()
 	})
 
 	ui.Handle("/sys/kbd/<up>", func(ui.Event) {
-		dirlist.SelectPrevElement()
-		updateFileList()
+		explorer.SelectPrevFile()
 	})
 
 	ui.Handle("/sys/kbd/<down>", func(ui.Event) {
-		dirlist.SelectNextElement()
-		updateFileList()
+		explorer.SelectNextFile()
 	})
 
 	ui.Handle("/sys/kbd/<left>", func(ui.Event) {
-		dirlist.NavUpDirectory()
-		updateFileList()
+		explorer.NavUpDirectory()
 	})
 
 	ui.Handle("/sys/kbd/<right>", func(ui.Event) {
-		dirlist.PerformFileAction()
-		updateFileList()
+		explorer.PerformFileAction()
 	})
 
 	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
-		dirlist.PerformFileAction()
-		updateFileList()
+		explorer.PerformFileAction()
 	})
 }

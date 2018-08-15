@@ -1,4 +1,4 @@
-package dirlist
+package explorer
 
 import (
 	"fmt"
@@ -12,31 +12,25 @@ import (
 	"strings"
 
 	"github.com/novalagung/gubrak"
-
-	"../types"
 )
 
 var currentPath string
 var dirListFileInfo []os.FileInfo
 var dirListPrettyNames []string
-var pathBar func(string)
-var outputStatusMessage func(string)
+
 var visibleList struct {
 	maxNumberVisible int
 	beginIndex       int
 	endIndex         int
 	selectedIndex    int
 }
-var widgetDimensions types.WidgetDimensions
+
 var shouldShowHidden = false
+var filetypesAllowedVideoFiles = []string{".avi", ".mpeg", ".mkv", ".mp4"}
 
-// Init initializes the dirlist
-func Init(widgetDim types.WidgetDimensions, pathBarHandler func(string), statusMessageHandler func(string)) {
-	widgetDimensions = widgetDim
-	pathBar = pathBarHandler
-	outputStatusMessage = statusMessageHandler
+func initFileList() {
 
-	visibleList.maxNumberVisible = widgetDim.Height - 2
+	visibleList.maxNumberVisible = filelistWidgetDims.Height - 2
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -44,13 +38,13 @@ func Init(widgetDim types.WidgetDimensions, pathBarHandler func(string), statusM
 	}
 
 	currentPath = dir
-	pathBar(currentPath)
-	PopulateDirList()
+	renderPathBar(currentPath)
+	populateDirList()
 }
 
-// PopulateDirList builds the list of elements
+// populateDirList builds the list of elements
 // in the selected path
-func PopulateDirList() {
+func populateDirList() {
 	dirListFileInfo = []os.FileInfo{}
 
 	dirList, err := ioutil.ReadDir(currentPath)
@@ -91,15 +85,13 @@ func PopulateDirList() {
 	}
 }
 
-// GetPrettyList gets the current
-func GetPrettyList() []string {
+func getPrettyList() []string {
 	colorifyDirList()
 	return dirListPrettyNames
 }
 
-// SelectPrevElement switches to the previous element
-// in DirList
-func SelectPrevElement() {
+// SelectPrevFile switches to the previous file
+func SelectPrevFile() {
 	if visibleList.selectedIndex > 0 {
 		visibleList.selectedIndex--
 	} else if visibleList.selectedIndex == 0 {
@@ -109,12 +101,11 @@ func SelectPrevElement() {
 			visibleList.endIndex--
 		}
 	}
-
+	renderFileList()
 }
 
-// SelectNextElement switches to the next element
-// in DirList
-func SelectNextElement() {
+// SelectNextfile switches to the next file
+func SelectNextFile() {
 	frameEndIndex := visibleList.endIndex - visibleList.beginIndex
 	if visibleList.selectedIndex < frameEndIndex {
 		visibleList.selectedIndex++
@@ -125,6 +116,7 @@ func SelectNextElement() {
 			visibleList.endIndex++
 		}
 	}
+	renderFileList()
 }
 
 // NavUpDirectory navigates up to the parent directory
@@ -132,8 +124,10 @@ func NavUpDirectory() {
 	path := path.Clean(currentPath + "/../")
 
 	setCurrentPath(path)
-	pathBar(path)
-	PopulateDirList()
+	populateDirList()
+
+	renderPathBar(path)
+	renderFileList()
 }
 
 // PerformFileAction either opens the dir or opens
@@ -144,17 +138,19 @@ func PerformFileAction() {
 	path := path.Join(currentPath, selectedFile.Name())
 	if selectedFile.IsDir() {
 		setCurrentPath(path)
-		PopulateDirList()
-		pathBar(currentPath)
+		populateDirList()
+		renderPathBar(currentPath)
 	} else {
 		runVideoPlayer(path)
 	}
+	renderFileList()
 }
 
 // ToggleHidden enables/disables showing the hidden files (.<filename>)
 func ToggleHidden() {
 	shouldShowHidden = !shouldShowHidden
-	PopulateDirList()
+	populateDirList()
+	renderFileList()
 }
 
 func runVideoPlayer(selectedFilePath string) {
@@ -195,7 +191,7 @@ func colorifyDirList() {
 		}
 		// Pad the width of the filename
 		filename := prefix + file.Name()
-		formatString := "[%-" + strconv.Itoa(widgetDimensions.Width-3) + "s](%s,%s)"
+		formatString := "[%-" + strconv.Itoa(filelistWidgetDims.Width-3) + "s](%s,%s)"
 		prettyName := fmt.Sprintf(formatString, filename, fgColor, bgColor)
 
 		dirListPrettyNames = append(dirListPrettyNames, prettyName)

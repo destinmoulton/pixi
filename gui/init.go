@@ -2,6 +2,8 @@ package gui
 
 import (
 	ui "github.com/gizak/termui"
+
+	"./explorer"
 )
 
 // Init starts the gui
@@ -14,7 +16,7 @@ func Init() {
 
 	setupEvents()
 
-	InitFileExplorer()
+	explorer.InitExplorer()
 
 	ui.Loop()
 }
