@@ -35,10 +35,6 @@ func setupEvents() {
 		ui.StopLoop()
 	})
 
-	ui.Handle("/sys/kbd/<escape>", func(ui.Event) {
-		ui.StopLoop()
-	})
-
 	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
 		ui.StopLoop()
 	})
