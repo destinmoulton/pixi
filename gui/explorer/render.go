@@ -36,6 +36,7 @@ func setupExplorerGUI() {
 	statusBarWidget.Height = 3
 	statusBarWidget.Text = ""
 
+	ui.Body.Rows = ui.Body.Rows[:0]
 	ui.Body.AddRows(
 		ui.NewRow(ui.NewCol(12, 0, fileListWidget)),
 		ui.NewRow(ui.NewCol(12, 0, statusBarWidget)))
