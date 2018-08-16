@@ -27,6 +27,8 @@ func InitExplorer() {
 }
 
 func setupExplorerGUI() {
+	ui.Clear()
+	ui.Render()
 
 	fileListWidget.ItemFgColor = ui.ColorYellow
 	fileListWidget.Height = filelistWidgetDims.Height

@@ -4,7 +4,10 @@ import (
 	ui "github.com/gizak/termui"
 
 	"./explorer"
+	"./help"
 )
+
+var isHelpActive = false
 
 // setupEvents creates the termui event handlers
 func setupEvents() {
@@ -14,6 +17,23 @@ func setupEvents() {
 
 	ui.Handle("/sys/kbd/C-c", func(ui.Event) {
 		ui.StopLoop()
+	})
+
+	ui.Handle("/sys/kbd/h", func(ui.Event) {
+		if isHelpActive {
+			explorer.InitExplorer()
+		} else {
+			help.Render()
+		}
+
+		isHelpActive = !isHelpActive
+	})
+
+	ui.Handle("/sys/kbd/<esc>", func(ui.Event) {
+		if isHelpActive {
+			explorer.InitExplorer()
+			isHelpActive = false
+		}
 	})
 
 	ui.Handle("/sys/kbd/.", func(ui.Event) {
