@@ -15,10 +15,10 @@ import (
 )
 
 var currentPath string
-var dirListFileInfo []os.FileInfo
+var filelistFullInfo []os.FileInfo
 var dirListPrettyNames []string
 
-var visibleList struct {
+var filelistVisible struct {
 	maxNumberVisible int
 	beginIndex       int
 	endIndex         int
@@ -30,7 +30,7 @@ var filetypesAllowedVideoFiles = []string{".avi", ".mpeg", ".mkv", ".mp4"}
 
 func initFileList() {
 
-	visibleList.maxNumberVisible = filelistWidgetDims.Height - 2
+	filelistVisible.maxNumberVisible = filelistWidgetDims.Height - 2
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -45,7 +45,7 @@ func initFileList() {
 // populateDirList builds the list of elements
 // in the selected path
 func populateDirList() {
-	dirListFileInfo = []os.FileInfo{}
+	filelistFullInfo = []os.FileInfo{}
 
 	dirList, err := ioutil.ReadDir(currentPath)
 
@@ -72,16 +72,16 @@ func populateDirList() {
 	}
 
 	// Directories first, files after
-	dirListFileInfo = append(dirListFileInfo, dirs...)
-	dirListFileInfo = append(dirListFileInfo, files...)
+	filelistFullInfo = append(filelistFullInfo, dirs...)
+	filelistFullInfo = append(filelistFullInfo, files...)
 
 	// Setup the visible list
-	visibleList.selectedIndex = 0
-	visibleList.beginIndex = 0
-	if len(dirListFileInfo) > visibleList.maxNumberVisible {
-		visibleList.endIndex = visibleList.maxNumberVisible - 1
+	filelistVisible.selectedIndex = 0
+	filelistVisible.beginIndex = 0
+	if len(filelistFullInfo) > filelistVisible.maxNumberVisible {
+		filelistVisible.endIndex = filelistVisible.maxNumberVisible - 1
 	} else {
-		visibleList.endIndex = len(dirListFileInfo) - 1
+		filelistVisible.endIndex = len(filelistFullInfo) - 1
 	}
 }
 
@@ -92,28 +92,28 @@ func getPrettyList() []string {
 
 // SelectPrevFile switches to the previous file
 func SelectPrevFile() {
-	if visibleList.selectedIndex > 0 {
-		visibleList.selectedIndex--
-	} else if visibleList.selectedIndex == 0 {
-		if visibleList.beginIndex > 0 {
+	if filelistVisible.selectedIndex > 0 {
+		filelistVisible.selectedIndex--
+	} else if filelistVisible.selectedIndex == 0 {
+		if filelistVisible.beginIndex > 0 {
 			// Move the visible "fame" up
-			visibleList.beginIndex--
-			visibleList.endIndex--
+			filelistVisible.beginIndex--
+			filelistVisible.endIndex--
 		}
 	}
 	renderFileList()
 }
 
-// SelectNextfile switches to the next file
+// SelectNextFile switches to the next file
 func SelectNextFile() {
-	frameEndIndex := visibleList.endIndex - visibleList.beginIndex
-	if visibleList.selectedIndex < frameEndIndex {
-		visibleList.selectedIndex++
-	} else if visibleList.selectedIndex == frameEndIndex {
-		if visibleList.endIndex < (len(dirListFileInfo) - 1) {
+	frameEndIndex := filelistVisible.endIndex - filelistVisible.beginIndex
+	if filelistVisible.selectedIndex < frameEndIndex {
+		filelistVisible.selectedIndex++
+	} else if filelistVisible.selectedIndex == frameEndIndex {
+		if filelistVisible.endIndex < (len(filelistFullInfo) - 1) {
 			// Move the visible "frame" down
-			visibleList.beginIndex++
-			visibleList.endIndex++
+			filelistVisible.beginIndex++
+			filelistVisible.endIndex++
 		}
 	}
 	renderFileList()
@@ -132,8 +132,8 @@ func NavUpDirectory() {
 
 // NavIntoDirectory navigates into the selected directory
 func NavIntoDirectory() {
-	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
-	selectedFile := visibleFilesInfo[visibleList.selectedIndex]
+	visibleFilesInfo := filelistFullInfo[filelistVisible.beginIndex : filelistVisible.endIndex+1]
+	selectedFile := visibleFilesInfo[filelistVisible.selectedIndex]
 	path := path.Join(currentPath, selectedFile.Name())
 
 	if selectedFile.IsDir() {
@@ -147,8 +147,8 @@ func NavIntoDirectory() {
 // PerformFileAction either opens the dir or opens
 // the selected file
 func PerformFileAction() {
-	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
-	selectedFile := visibleFilesInfo[visibleList.selectedIndex]
+	visibleFilesInfo := filelistFullInfo[filelistVisible.beginIndex : filelistVisible.endIndex+1]
+	selectedFile := visibleFilesInfo[filelistVisible.selectedIndex]
 	path := path.Join(currentPath, selectedFile.Name())
 	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
 		runVideoPlayer(path)
@@ -178,19 +178,19 @@ func setCurrentPath(path string) {
 
 func colorifyDirList() {
 	dirListPrettyNames = []string{}
-	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
+	visibleFilesInfo := filelistFullInfo[filelistVisible.beginIndex : filelistVisible.endIndex+1]
 	for idx, file := range visibleFilesInfo {
 		fgColor := "fg-white"
 		bgColor := ""
 		prefix := ""
 
-		if visibleList.selectedIndex == idx {
+		if filelistVisible.selectedIndex == idx {
 			bgColor = "bg-green"
 		}
 
 		if file.IsDir() {
 			fgColor = "fg-yellow"
-			if visibleList.selectedIndex == idx {
+			if filelistVisible.selectedIndex == idx {
 				bgColor = "bg-blue"
 				fgColor = "fg-white"
 			}
