@@ -14,8 +14,8 @@ var statusBarWidget = ui.NewPar("")
 
 var filelistWidgetDims types.WidgetDimensions
 
-// InitExplorer initializes the File Explorer
-func InitExplorer() {
+// Render initializes the File Explorer
+func InitRender() {
 	filelistWidgetDims.Width = ui.TermWidth()
 	filelistWidgetDims.Height = ui.TermHeight() - 3
 
@@ -26,16 +26,20 @@ func InitExplorer() {
 	renderFileList()
 }
 
-func setupExplorerGUI() {
-	ui.Clear()
-	ui.Render()
+// ReRender re-builds the explorer
+func ReRender() {
+	setupExplorerGUI()
+	renderFileList()
+}
 
+func setupExplorerGUI() {
 	fileListWidget.ItemFgColor = ui.ColorYellow
 	fileListWidget.Height = filelistWidgetDims.Height
 
 	statusBarWidget.Height = 3
 	statusBarWidget.Text = ""
 
+	ui.Clear()
 	ui.Body.Rows = ui.Body.Rows[:0]
 	ui.Body.AddRows(
 		ui.NewRow(ui.NewCol(12, 0, fileListWidget)),
