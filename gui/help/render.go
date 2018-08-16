@@ -17,7 +17,7 @@ var helpLines = []string{
 	"  h\tToggle hidden files and folders.",
 	"  q or Ctrl+c   \tQuit/Exit Pixi",
 	"  \t",
-	"  ESC\tClose Help - Return to Explorer",
+	"  ESC/F1\tClose Help - Return to Explorer",
 }
 
 var helpList = ui.NewPar("")
