@@ -21,7 +21,7 @@ func setupEvents() {
 
 	ui.Handle("/sys/kbd/h", func(ui.Event) {
 		if isHelpActive {
-			explorer.InitExplorer()
+			explorer.ReRender()
 		} else {
 			help.Render()
 		}
@@ -31,7 +31,7 @@ func setupEvents() {
 
 	ui.Handle("/sys/kbd/<esc>", func(ui.Event) {
 		if isHelpActive {
-			explorer.InitExplorer()
+			explorer.ReRender()
 			isHelpActive = false
 		}
 	})
