@@ -16,7 +16,7 @@ func Init() {
 
 	setupEvents()
 
-	explorer.InitExplorer()
+	explorer.InitRender()
 
 	ui.Loop()
 }
