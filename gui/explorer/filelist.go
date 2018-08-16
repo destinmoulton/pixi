@@ -16,7 +16,7 @@ import (
 
 var currentPath string
 
-type t_visible struct {
+type tvisible struct {
 	maxNumberVisible int
 	beginIndex       int
 	endIndex         int
@@ -24,7 +24,7 @@ type t_visible struct {
 }
 
 var filelist struct {
-	visible  t_visible
+	visible  tvisible
 	fullInfo []os.FileInfo
 	pretty   []string
 }
