@@ -19,7 +19,7 @@ func setupEvents() {
 		ui.StopLoop()
 	})
 
-	ui.Handle("/sys/kbd/h", func(ui.Event) {
+	ui.Handle("/sys/kbd/<f1>", func(ui.Event) {
 		if isHelpActive {
 			explorer.ReRender()
 		} else {
@@ -36,7 +36,7 @@ func setupEvents() {
 		}
 	})
 
-	ui.Handle("/sys/kbd/.", func(ui.Event) {
+	ui.Handle("/sys/kbd/h", func(ui.Event) {
 		explorer.ToggleHidden()
 	})
 

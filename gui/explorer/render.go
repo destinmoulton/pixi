@@ -10,11 +10,11 @@ import (
 var fileListWidget = ui.NewList()
 
 // statusBarWidget termui widget Status Bar
-var statusBarWidget = ui.NewPar("")
+var statusBarWidget = ui.NewPar("[F1](fg-green) Help | [h](fg-green) Toggle Hidden Files")
 
 var filelistWidgetDims types.WidgetDimensions
 
-// Render initializes the File Explorer
+// InitRender initializes the File Explorer
 func InitRender() {
 	filelistWidgetDims.Width = ui.TermWidth()
 	filelistWidgetDims.Height = ui.TermHeight() - 3
@@ -37,7 +37,6 @@ func setupExplorerGUI() {
 	fileListWidget.Height = filelistWidgetDims.Height
 
 	statusBarWidget.Height = 3
-	statusBarWidget.Text = ""
 
 	ui.Clear()
 	ui.Body.Rows = ui.Body.Rows[:0]

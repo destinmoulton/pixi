@@ -9,9 +9,15 @@ import (
 )
 
 var helpLines = []string{
-	".\tToggle hidden files and folders.",
-	"q or Ctrl+c   \tQuit/Exit Pixi",
-	"ESC\tClose Help - Return to Explorer",
+	"  \t",
+	"  Up/Down Arrows     \tSelect directories/files.",
+	"  Left Arrow\tNavigate up to parent directory.",
+	"  Right Arrow\tNavigate into selected directory.",
+	"  Enter/Return\tPlay selected file.",
+	"  h\tToggle hidden files and folders.",
+	"  q or Ctrl+c   \tQuit/Exit Pixi",
+	"  \t",
+	"  ESC\tClose Help - Return to Explorer",
 }
 
 var helpList = ui.NewPar("")
@@ -35,7 +41,7 @@ func tabLines(lines []string) string {
 	w := new(tabwriter.Writer)
 
 	buf := new(bytes.Buffer)
-	w.Init(buf, 0, 8, 0, ' ', 0)
+	w.Init(buf, 0, 10, 0, ' ', 0)
 	for _, line := range lines {
 		fmt.Fprintln(w, line)
 	}
