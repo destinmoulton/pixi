@@ -130,17 +130,27 @@ func NavUpDirectory() {
 	renderFileList()
 }
 
+// NavIntoDirectory navigates into the selected directory
+func NavIntoDirectory() {
+	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
+	selectedFile := visibleFilesInfo[visibleList.selectedIndex]
+	path := path.Join(currentPath, selectedFile.Name())
+
+	if selectedFile.IsDir() {
+		setCurrentPath(path)
+		populateDirList()
+		renderPathBar(currentPath)
+		renderFileList()
+	}
+}
+
 // PerformFileAction either opens the dir or opens
 // the selected file
 func PerformFileAction() {
 	visibleFilesInfo := dirListFileInfo[visibleList.beginIndex : visibleList.endIndex+1]
 	selectedFile := visibleFilesInfo[visibleList.selectedIndex]
 	path := path.Join(currentPath, selectedFile.Name())
-	if selectedFile.IsDir() {
-		setCurrentPath(path)
-		populateDirList()
-		renderPathBar(currentPath)
-	} else {
+	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
 		runVideoPlayer(path)
 	}
 	renderFileList()
@@ -185,10 +195,11 @@ func colorifyDirList() {
 				fgColor = "fg-white"
 			}
 		}
-		//outputStatusMessage(path.Ext(file.Name()))
-		if res, _ := gubrak.Includes(filetypesAllowedVideoFiles, path.Ext(file.Name())); res == true {
+
+		if isVideoFile(file.Name()) {
 			prefix = "[>] "
 		}
+
 		// Pad the width of the filename
 		filename := prefix + file.Name()
 		formatString := "[%-" + strconv.Itoa(filelistWidgetDims.Width-3) + "s](%s,%s)"
@@ -196,4 +207,9 @@ func colorifyDirList() {
 
 		dirListPrettyNames = append(dirListPrettyNames, prettyName)
 	}
+}
+
+func isVideoFile(filename string) bool {
+	res, _ := gubrak.Includes(filetypesAllowedVideoFiles, path.Ext(filename))
+	return res
 }

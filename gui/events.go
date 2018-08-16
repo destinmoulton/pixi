@@ -53,7 +53,7 @@ func setupEvents() {
 	})
 
 	ui.Handle("/sys/kbd/<right>", func(ui.Event) {
-		explorer.PerformFileAction()
+		explorer.NavIntoDirectory()
 	})
 
 	ui.Handle("/sys/kbd/<enter>", func(ui.Event) {
