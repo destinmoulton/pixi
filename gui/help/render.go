@@ -25,7 +25,7 @@ var helpList = ui.NewPar("")
 // Render the help window
 func Render() {
 	helpList.Text = tabLines(helpLines)
-	helpList.BorderLabel = "Pixi Help"
+	helpList.BorderLabel = "Pixi Help "
 	helpList.Height = ui.TermHeight()
 
 	ui.Clear()
