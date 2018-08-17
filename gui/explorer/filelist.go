@@ -38,9 +38,21 @@ func initFileList() {
 
 	filelist.visible.maxNumberVisible = filelistWidgetDims.Height - 2
 
-	currentPath = config.Get("LastOpenDirectory").(string)
+	initialPath := config.Get("LastOpenDirectory").(string)
+	if !doesDirectoryExist(initialPath) {
+		initialPath = config.GetInitialDirectory()
+	}
+	setCurrentPath(initialPath)
+
 	renderPathBar(currentPath)
 	populateDirList()
+}
+
+func doesDirectoryExist(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }
 
 // populateDirList builds the list of elements

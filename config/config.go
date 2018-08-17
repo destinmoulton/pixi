@@ -29,7 +29,7 @@ func Init() {
 		createConfigFile()
 	}
 
-	viper.SetDefault("LastOpenDirectory", getCwd())
+	viper.SetDefault("LastOpenDirectory", GetInitialDirectory())
 	viper.SetConfigType("json")
 	viper.SetConfigFile(configFullFilePath)
 
@@ -56,7 +56,8 @@ func getHomeDir() string {
 	return dir
 }
 
-func getCwd() string {
+// GetInitialDirectory gets the start directory
+func GetInitialDirectory() string {
 	dir, err := os.Getwd()
 	checkErr(err)
 	return dir
