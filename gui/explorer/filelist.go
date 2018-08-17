@@ -12,6 +12,8 @@ import (
 	"strings"
 
 	"github.com/novalagung/gubrak"
+
+	"../../config"
 )
 
 var currentPath string
@@ -36,12 +38,7 @@ func initFileList() {
 
 	filelist.visible.maxNumberVisible = filelistWidgetDims.Height - 2
 
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	currentPath = dir
+	currentPath = config.Get("LastOpenDirectory").(string)
 	renderPathBar(currentPath)
 	populateDirList()
 }
@@ -178,6 +175,8 @@ func runVideoPlayer(selectedFilePath string) {
 
 func setCurrentPath(path string) {
 	currentPath = path
+
+	config.Set("LastOpenDirectory", path)
 }
 
 func colorifyDirList() {
