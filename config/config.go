@@ -52,17 +52,13 @@ func Set(key string, value interface{}) {
 
 func getHomeDir() string {
 	dir, err := homedir.Dir()
-	if err != nil {
-		panic(fmt.Errorf("Fatal error getting home directory: %s ", err))
-	}
+	checkErr(err)
 	return dir
 }
 
 func getCwd() string {
-	dir, errCwd := os.Getwd()
-	if errCwd != nil {
-		panic(fmt.Errorf("Fatal error getting current working directory: %s ", errCwd))
-	}
+	dir, err := os.Getwd()
+	checkErr(err)
 	return dir
 }
 
