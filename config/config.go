@@ -1,13 +1,18 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
 )
+
+type tConfigMap map[string]interface{}
+
+var configMap tConfigMap
 
 var configSubPath = ".config/pixi"
 var configDir = ""
@@ -29,25 +34,19 @@ func Init() {
 		createConfigFile()
 	}
 
-	viper.SetDefault("LastOpenDirectory", GetInitialDirectory())
-	viper.SetConfigType("json")
-	viper.SetConfigFile(configFullFilePath)
-
-	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s ", err))
-	}
+	loadAndMapifyConfig()
 }
 
 // Get returns the config value referred to by key
 func Get(key string) interface{} {
-	return viper.Get(key)
+	return configMap[key]
 }
 
 // Set a config value to a key
 func Set(key string, value interface{}) {
-	viper.Set(key, value)
+	configMap[key] = value
 
-	viper.WriteConfig()
+	writeConfigFile(configMap)
 }
 
 func getHomeDir() string {
@@ -63,6 +62,21 @@ func GetInitialDirectory() string {
 	return dir
 }
 
+func loadAndMapifyConfig() {
+	configFile, err := ioutil.ReadFile(configFullFilePath)
+
+	checkErr(err)
+
+	errj := json.Unmarshal([]byte(configFile), &configMap)
+	checkErr(errj)
+}
+
+func writeConfigFile(jsonMap tConfigMap) {
+	data, err := json.Marshal(&jsonMap)
+	checkErr(err)
+	ioutil.WriteFile(configFullFilePath, data, 0666)
+}
+
 func createConfigFile() {
 	if !doesConfigPathExist() {
 		errD := os.MkdirAll(configDir, os.ModePerm)
@@ -71,15 +85,11 @@ func createConfigFile() {
 		}
 	}
 
-	f, err := os.Create(configFullFilePath)
-	checkErr(err)
+	initialJSON := make(tConfigMap)
 
-	defer f.Close()
+	initialJSON["LastOpenDirectory"] = GetInitialDirectory()
 
-	_, err2 := f.WriteString("{}")
-
-	checkErr(err2)
-	f.Sync()
+	writeConfigFile(initialJSON)
 }
 
 func doesConfigPathExist() bool {
