@@ -5,9 +5,6 @@ import (
 	"os"
 )
 
-// Log a pointer to the log Logger
-var Log *log.Logger
-
 // StartLogger initializes logging to file
 func StartLogger() *os.File {
 	cwd, err := os.Getwd()
@@ -20,11 +17,7 @@ func StartLogger() *os.File {
 	}
 
 	log.SetOutput(file)
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	//Log = log.New(f, "", log.LstdFlags|log.Lshortfile)
-	return file
-}
+	log.SetFlags(log.LstdFlags | log.Llongfile)
 
-func Println(args ...interface{}) {
-	Log.Println(args...)
+	return file
 }
