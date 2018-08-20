@@ -11,8 +11,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/novalagung/gubrak"
-
 	"../../config"
 )
 
@@ -32,7 +30,13 @@ var filelist struct {
 }
 
 var shouldShowHidden = false
-var filetypesAllowedVideoFiles = []string{".avi", ".mpeg", ".mkv", ".mp4"}
+
+var filetypes = map[string]string{
+	".avi":  "video",
+	".mpeg": "video",
+	".mkv":  "video",
+	".mp4":  "video",
+}
 
 func initFileList() {
 
@@ -225,6 +229,9 @@ func colorifyDirList() {
 }
 
 func isVideoFile(filename string) bool {
-	res, _ := gubrak.Includes(filetypesAllowedVideoFiles, path.Ext(filename))
-	return res
+	filetype := filetypes[path.Ext(filename)]
+	if filetype == "video" {
+		return true
+	}
+	return false
 }
