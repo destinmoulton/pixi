@@ -18,9 +18,9 @@ var clockWidget = ui.NewPar("Time")
 var filelistWidgetDims types.WidgetDimensions
 var clockTicker *time.Ticker
 
-// InitRender initializes the File Explorer
-func InitRender() {
-	log.Println("InitRender() running")
+// StartExplorer initializes the File Explorer
+func StartExplorer() {
+	log.Println("StartExplorer() running")
 	filelistWidgetDims.Width = ui.TermWidth()
 	filelistWidgetDims.Height = ui.TermHeight() - 3
 
@@ -71,21 +71,17 @@ func renderFileList() {
 }
 
 func startClock() {
-	clockTicker = time.NewTicker(time.Second)
+	clockTicker = time.NewTicker(time.Second * 10)
 	go func() {
-
 		for t := range clockTicker.C {
-			go renderClock(t)
+			renderClock(t)
 		}
 	}()
-
 }
 
 func renderClock(t time.Time) {
-	//now := time.Now()
-	//hour, min, _ := now.Clock()
-
-	clockWidget.Text = t.Format("3:04:05 pm")
+	clockWidget.Text = t.Format("   3:04 pm")
+	renderExplorer()
 }
 
 func renderExplorer() {
