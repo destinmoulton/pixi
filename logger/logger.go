@@ -17,7 +17,7 @@ func StartLogger() *os.File {
 	}
 
 	log.SetOutput(file)
-	log.SetFlags(log.LstdFlags | log.Llongfile)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	return file
 }
