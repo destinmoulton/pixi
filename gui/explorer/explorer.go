@@ -1,6 +1,9 @@
 package explorer
 
 import (
+	"log"
+	"time"
+
 	ui "github.com/gizak/termui"
 
 	"../../types"
@@ -11,11 +14,13 @@ var fileListWidget = ui.NewList()
 
 // statusBarWidget termui widget Status Bar
 var statusBarWidget = ui.NewPar("[F1](fg-green) Help | [h](fg-green) Toggle Hidden Files")
-var timeWidget = ui.NewPar("Time")
+var clockWidget = ui.NewPar("Time")
 var filelistWidgetDims types.WidgetDimensions
+var clockTicker *time.Ticker
 
 // InitRender initializes the File Explorer
 func InitRender() {
+	log.Println("InitRender() running")
 	filelistWidgetDims.Width = ui.TermWidth()
 	filelistWidgetDims.Height = ui.TermHeight() - 3
 
@@ -24,6 +29,8 @@ func InitRender() {
 	initFileList()
 
 	renderFileList()
+	startClock()
+	renderClock(time.Now())
 }
 
 // ReRender re-builds the explorer
@@ -37,13 +44,13 @@ func setupExplorerGUI() {
 	fileListWidget.Height = filelistWidgetDims.Height
 
 	statusBarWidget.Height = 3
-	timeWidget.Height = 3
+	clockWidget.Height = 3
 
 	ui.Clear()
 	ui.Body.Rows = ui.Body.Rows[:0]
 	ui.Body.AddRows(
 		ui.NewRow(ui.NewCol(12, 0, fileListWidget)),
-		ui.NewRow(ui.NewCol(10, 0, statusBarWidget), ui.NewCol(2, 0, timeWidget)))
+		ui.NewRow(ui.NewCol(10, 0, statusBarWidget), ui.NewCol(2, 0, clockWidget)))
 
 	ui.Body.Align()
 }
@@ -61,6 +68,24 @@ func renderPathBar(path string) {
 func renderFileList() {
 	fileListWidget.Items = getPrettyList()
 	renderExplorer()
+}
+
+func startClock() {
+	clockTicker = time.NewTicker(time.Second)
+	go func() {
+
+		for t := range clockTicker.C {
+			go renderClock(t)
+		}
+	}()
+
+}
+
+func renderClock(t time.Time) {
+	//now := time.Now()
+	//hour, min, _ := now.Clock()
+
+	clockWidget.Text = t.Format("3:04:05 pm")
 }
 
 func renderExplorer() {
