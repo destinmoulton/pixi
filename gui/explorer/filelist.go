@@ -204,6 +204,7 @@ func colorifyDirList() {
 		prefix := ""
 
 		if filelist.visible.selectedIndex == idx {
+			fgColor = "fg-black"
 			bgColor = "bg-green"
 		}
 
