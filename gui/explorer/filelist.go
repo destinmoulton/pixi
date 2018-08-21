@@ -211,8 +211,8 @@ func colorifyDirList() {
 		if file.IsDir() {
 			fgColor = "fg-yellow"
 			if filelist.visible.selectedIndex == idx {
-				bgColor = "bg-blue"
 				fgColor = "fg-white"
+				bgColor = "bg-blue"
 			}
 		}
 
