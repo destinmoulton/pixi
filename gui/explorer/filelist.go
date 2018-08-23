@@ -96,6 +96,7 @@ func populateDirList() {
 	filelist.fullInfo = append(filelist.fullInfo, files...)
 
 	if priorVisible, ok := visibleHistory[currentPath]; ok == true {
+		log.Println("prior visible found")
 		filelist.visible = priorVisible
 	} else {
 		// Setup the visible list
@@ -107,6 +108,7 @@ func populateDirList() {
 			filelist.visible.endIndex = len(filelist.fullInfo) - 1
 		}
 		visibleHistory[currentPath] = filelist.visible
+		log.Println("visible history does not exist")
 	}
 }
 
