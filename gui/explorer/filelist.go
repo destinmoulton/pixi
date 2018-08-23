@@ -95,7 +95,8 @@ func populateDirList() {
 	filelist.fullInfo = append(filelist.fullInfo, dirs...)
 	filelist.fullInfo = append(filelist.fullInfo, files...)
 
-	if priorVisible, ok := visibleHistory[currentPath]; ok == true {
+	priorVisible, hasHistory := visibleHistory[currentPath]
+	if hasHistory && priorVisible.selectedIndex <= len(filelist.fullInfo)-1 {
 		filelist.visible = priorVisible
 	} else {
 		// Setup the visible list
