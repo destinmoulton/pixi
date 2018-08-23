@@ -28,6 +28,9 @@ var filelist struct {
 	pretty   []string
 }
 
+// visibleHistory stores the visible/selected history
+var visibleHistory = make(map[string]tvisible)
+
 var maxNumberVisible int
 var shouldShowHidden = false
 
@@ -92,13 +95,18 @@ func populateDirList() {
 	filelist.fullInfo = append(filelist.fullInfo, dirs...)
 	filelist.fullInfo = append(filelist.fullInfo, files...)
 
-	// Setup the visible list
-	filelist.visible.selectedIndex = 0
-	filelist.visible.beginIndex = 0
-	if len(filelist.fullInfo) > maxNumberVisible {
-		filelist.visible.endIndex = maxNumberVisible - 1
+	if priorVisible, ok := visibleHistory[currentPath]; ok == true {
+		filelist.visible = priorVisible
 	} else {
-		filelist.visible.endIndex = len(filelist.fullInfo) - 1
+		// Setup the visible list
+		filelist.visible.selectedIndex = 0
+		filelist.visible.beginIndex = 0
+		if len(filelist.fullInfo) > maxNumberVisible {
+			filelist.visible.endIndex = maxNumberVisible - 1
+		} else {
+			filelist.visible.endIndex = len(filelist.fullInfo) - 1
+		}
+		visibleHistory[currentPath] = filelist.visible
 	}
 }
 
@@ -118,6 +126,7 @@ func SelectPrevFile() {
 			filelist.visible.endIndex--
 		}
 	}
+	visibleHistory[currentPath] = filelist.visible
 	renderFileList()
 }
 
@@ -133,6 +142,7 @@ func SelectNextFile() {
 			filelist.visible.endIndex++
 		}
 	}
+	visibleHistory[currentPath] = filelist.visible
 	renderFileList()
 }
 
