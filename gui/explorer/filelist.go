@@ -17,10 +17,9 @@ import (
 var currentPath string
 
 type tvisible struct {
-	maxNumberVisible int
-	beginIndex       int
-	endIndex         int
-	selectedIndex    int
+	beginIndex    int
+	endIndex      int
+	selectedIndex int
 }
 
 var filelist struct {
@@ -29,6 +28,7 @@ var filelist struct {
 	pretty   []string
 }
 
+var maxNumberVisible int
 var shouldShowHidden = false
 
 var filetypes = map[string]string{
@@ -40,7 +40,7 @@ var filetypes = map[string]string{
 
 func initFileList() {
 
-	filelist.visible.maxNumberVisible = filelistWidgetDims.Height - 2
+	maxNumberVisible = filelistWidgetDims.Height - 2
 
 	initialPath := config.Get(config.CFG_KEY_LASTOPENDIRECTORY).(string)
 	if !doesDirectoryExist(initialPath) {
@@ -95,8 +95,8 @@ func populateDirList() {
 	// Setup the visible list
 	filelist.visible.selectedIndex = 0
 	filelist.visible.beginIndex = 0
-	if len(filelist.fullInfo) > filelist.visible.maxNumberVisible {
-		filelist.visible.endIndex = filelist.visible.maxNumberVisible - 1
+	if len(filelist.fullInfo) > maxNumberVisible {
+		filelist.visible.endIndex = maxNumberVisible - 1
 	} else {
 		filelist.visible.endIndex = len(filelist.fullInfo) - 1
 	}
