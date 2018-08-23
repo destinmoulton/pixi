@@ -32,7 +32,7 @@ func checkErr(err error) {
 func Init() {
 	configDir = path.Join(getHomeDir(), configSubPath)
 	configFullFilePath = path.Join(configDir, configFilename)
-	fmt.Println(configFullFilePath)
+
 	if !doesConfigFileExist() {
 		createConfigFile()
 	}
