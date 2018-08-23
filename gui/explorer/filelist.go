@@ -46,7 +46,7 @@ func initFileList() {
 	maxNumberVisible = filelistWidgetDims.Height - 2
 
 	initialPath := config.Get(config.CFG_KEY_LASTOPENDIRECTORY).(string)
-	if !doesDirectoryExist(initialPath) {
+	if !doesDirectoryExist(initialPath) || !isDirectoryReadable(initialPath) {
 		initialPath = config.GetInitialDirectory()
 	}
 	setCurrentPath(initialPath)
@@ -69,11 +69,11 @@ func populateDirList() {
 
 	dirList, err := ioutil.ReadDir(currentPath)
 
-	sort.Sort(SortByLowerCaseFilename(dirList))
-
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	sort.Sort(SortByLowerCaseFilename(dirList))
 
 	dirs := []os.FileInfo{}
 	files := []os.FileInfo{}
@@ -149,12 +149,13 @@ func SelectNextFile() {
 // NavUpDirectory navigates up to the parent directory
 func NavUpDirectory() {
 	path := path.Clean(currentPath + "/../")
+	if isDirectoryReadable(path) {
+		setCurrentPath(path)
+		populateDirList()
 
-	setCurrentPath(path)
-	populateDirList()
-
-	renderPathBar(path)
-	renderFileList()
+		renderPathBar(path)
+		renderFileList()
+	}
 }
 
 // NavIntoDirectory navigates into the selected directory
@@ -164,10 +165,13 @@ func NavIntoDirectory() {
 	path := path.Join(currentPath, selectedFile.Name())
 
 	if selectedFile.IsDir() {
-		setCurrentPath(path)
-		populateDirList()
-		renderPathBar(currentPath)
-		renderFileList()
+
+		if isDirectoryReadable(path) {
+			setCurrentPath(path)
+			populateDirList()
+			renderPathBar(currentPath)
+			renderFileList()
+		}
 	}
 }
 
@@ -188,6 +192,13 @@ func ToggleHidden() {
 	shouldShowHidden = !shouldShowHidden
 	populateDirList()
 	renderFileList()
+}
+
+func isDirectoryReadable(dir string) bool {
+	if _, err := ioutil.ReadDir(dir); err != nil {
+		return false
+	}
+	return true
 }
 
 func runVideoPlayer(selectedFilePath string) {
