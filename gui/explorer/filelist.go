@@ -45,7 +45,7 @@ func initFileList() {
 
 	maxNumberVisible = filelistWidgetDims.Height - 2
 
-	initialPath := config.Get(config.CFG_KEY_LASTOPENDIRECTORY).(string)
+	initialPath := config.Get(config.KeyLastOpenDirectory).(string)
 	if !doesDirectoryExist(initialPath) || !isDirectoryReadable(initialPath) {
 		initialPath = config.GetInitialDirectory()
 	}
@@ -214,7 +214,7 @@ func runVideoPlayer(selectedFilePath string) {
 func setCurrentPath(path string) {
 	currentPath = path
 
-	config.Set(config.CFG_KEY_LASTOPENDIRECTORY, path)
+	config.Set(config.KeyLastOpenDirectory, path)
 }
 
 func colorifyDirList() {
@@ -252,9 +252,11 @@ func colorifyDirList() {
 }
 
 func isVideoFile(filename string) bool {
-	filetype := filetypes[path.Ext(filename)]
-	if filetype == "video" {
+	switch filetypes[path.Ext(filename)] {
+	default:
+		return false
+	case "video":
 		return true
+
 	}
-	return false
 }

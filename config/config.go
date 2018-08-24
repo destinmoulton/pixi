@@ -19,8 +19,8 @@ var configDir = ""
 var configFilename = "pixi.json"
 var configFullFilePath = ""
 
-// CFG_KEY_LASTOPENDIRECTORY is the config key for the last open directory
-const CFG_KEY_LASTOPENDIRECTORY = "LastOpenDirectory"
+// KeyLastOpenDirectory is the config key for the last open directory
+const KeyLastOpenDirectory = "LastOpenDirectory"
 
 func checkErr(err error) {
 	if err != nil {
@@ -90,7 +90,7 @@ func createConfigFile() {
 
 	initialJSON := make(tConfigMap)
 
-	initialJSON[CFG_KEY_LASTOPENDIRECTORY] = GetInitialDirectory()
+	initialJSON[KeyLastOpenDirectory] = GetInitialDirectory()
 
 	writeConfigFile(initialJSON)
 }
