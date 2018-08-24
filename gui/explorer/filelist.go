@@ -223,29 +223,30 @@ func colorifyDirList() {
 	for idx, file := range visibleFilesInfo {
 		fgColor := "fg-white"
 		bgColor := ""
-		prefix := ""
 
 		if filelist.visible.selectedIndex == idx {
-			fgColor = "fg-black"
-			bgColor = "bg-green"
-		}
-
-		if file.IsDir() {
-			fgColor = "fg-yellow"
-			if filelist.visible.selectedIndex == idx {
+			if file.IsDir() {
 				fgColor = "fg-white"
 				bgColor = "bg-blue"
+			} else if isVideoFile(file.Name()) {
+				fgColor = "fg-black"
+				bgColor = "bg-magenta"
+			} else {
+				fgColor = "fg-black"
+				bgColor = "bg-green"
+			}
+		} else if file.IsDir() {
+			fgColor = "fg-yellow"
+		} else {
+			if isVideoFile(file.Name()) {
+				fgColor = "fg-magenta"
+				bgColor = ""
 			}
 		}
 
-		if isVideoFile(file.Name()) {
-			prefix = "[>] "
-		}
-
 		// Pad the width of the filename
-		filename := prefix + file.Name()
 		formatString := "[%-" + strconv.Itoa(filelistWidgetDims.Width-3) + "s](%s,%s)"
-		prettyName := fmt.Sprintf(formatString, filename, fgColor, bgColor)
+		prettyName := fmt.Sprintf(formatString, file.Name(), fgColor, bgColor)
 
 		filelist.pretty = append(filelist.pretty, prettyName)
 	}
