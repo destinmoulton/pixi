@@ -253,11 +253,8 @@ func colorifyDirList() {
 }
 
 func isVideoFile(filename string) bool {
-	switch filetypes[path.Ext(filename)] {
-	default:
-		return false
-	case "video":
+	if val, ok := filetypes[path.Ext(filename)]; ok == true && val == "video" {
 		return true
-
 	}
+	return false
 }
