@@ -59,6 +59,7 @@ func doesDirectoryExist(path string) bool {
 // in the selected path
 func populateDirList() {
 	filelist.fullInfo = []os.FileInfo{}
+	filelist.pretty = []tpretty{}
 
 	dirList, err := ioutil.ReadDir(currentPath)
 
@@ -124,13 +125,12 @@ func NavIntoDirectory() {
 
 // PerformFileAction either opens the dir or opens
 // the selected file
-func PerformFileAction(r, c int) {
-	selectedFile := filelist.fullInfo[r]
+func PerformFileAction() {
+	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
 	path := path.Join(currentPath, selectedFile.Name())
 	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
 		runVideoPlayer(path)
 	}
-	renderFileList()
 }
 
 // ToggleHidden enables/disables showing the hidden files (.<filename>)

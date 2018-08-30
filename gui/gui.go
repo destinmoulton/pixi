@@ -29,16 +29,25 @@ func Init() {
 func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	if eventKey.Rune() == 'q' {
 		app.Stop()
+		return nil
 	}
 
 	if activePage == "explorer" {
 		if eventKey.Key() == tcell.KeyLeft {
 			explorer.NavUpDirectory()
+			return nil
 		}
 
 		if eventKey.Key() == tcell.KeyRight {
 			explorer.NavIntoDirectory()
+			return nil
 		}
+
+		if eventKey.Key() == tcell.KeyEnter {
+			explorer.PerformFileAction()
+			return nil
+		}
+
 	}
 
 	return eventKey
