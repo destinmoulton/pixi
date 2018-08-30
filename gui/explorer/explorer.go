@@ -1,31 +1,31 @@
 package explorer
 
 import (
-	"log"
 	"time"
 
-	ui "github.com/gizak/termui"
+	"github.com/rivo/tview"
 
 	"../../types"
 )
 
-// fileListWidget termui widget List
-var fileListWidget = ui.NewList()
+var redrawParent func()
+var uiScreen *tview.Grid
 
-// statusBarWidget termui widget Status Bar
-var statusBarWidget = ui.NewPar("[F1](fg-green) Help | [h](fg-green) Toggle Hidden Files")
-var clockWidget = ui.NewPar("Time")
-var filelistWidgetDims types.WidgetDimensions
+// listWidget termui widget List
+var listWidget *tview.Table
+
+//var listBox = tview.NewFrame(listWidget)
+
+// infoWidget termui widget Status Bar
+var infoWidget *tview.TextView
+
+var clockWidget *tview.TextView
+
+var listWidgetDims types.WidgetDimensions
 var clockTicker *time.Ticker
 
 // StartExplorer initializes the File Explorer
 func StartExplorer() {
-	log.Println("StartExplorer() running")
-	filelistWidgetDims.Width = ui.TermWidth()
-	filelistWidgetDims.Height = ui.TermHeight() - 3
-
-	setupExplorerGUI()
-
 	initFileList()
 
 	renderFileList()
@@ -35,39 +35,47 @@ func StartExplorer() {
 
 // ReRender re-builds the explorer
 func ReRender() {
-	setupExplorerGUI()
 	renderFileList()
 }
 
-func setupExplorerGUI() {
-	fileListWidget.ItemFgColor = ui.ColorYellow
-	fileListWidget.Height = filelistWidgetDims.Height
+// UI builds the gui for the explorer list of files
+func UI(redraw func()) *tview.Grid {
+	redrawParent = redraw
+	uiScreen = tview.NewGrid().SetRows(0, 1).SetColumns(0, 10).SetBorders(true)
+	listWidget = tview.NewTable().SetBorders(false)
+	infoWidget = tview.NewTextView().SetTextAlign(tview.AlignLeft).SetText("Test")
+	clockWidget = tview.NewTextView().SetTextAlign(tview.AlignCenter)
 
-	statusBarWidget.Height = 3
-	clockWidget.Height = 3
+	uiScreen.AddItem(listWidget, 0, 0, 1, 2, 0, 0, true)
+	uiScreen.AddItem(infoWidget, 1, 0, 1, 1, 0, 0, false)
+	uiScreen.AddItem(clockWidget, 1, 1, 1, 1, 0, 0, false)
+	return uiScreen
+}
 
-	ui.Clear()
-	ui.Body.Rows = ui.Body.Rows[:0]
-	ui.Body.AddRows(
-		ui.NewRow(ui.NewCol(12, 0, fileListWidget)),
-		ui.NewRow(ui.NewCol(10, 0, statusBarWidget), ui.NewCol(2, 0, clockWidget)))
-
-	ui.Body.Align()
+func getSelectedFileIndex() int {
+	sel, _ := listWidget.GetSelection()
+	return sel
 }
 
 func renderStatusMessage(text string) {
-	statusBarWidget.Text = text
-	renderExplorer()
+	infoWidget.SetText(text)
 }
 
 func renderPathBar(path string) {
-	fileListWidget.BorderLabel = path + " "
-	renderExplorer()
+	listWidget.SetTitle(path)
 }
 
 func renderFileList() {
-	fileListWidget.Items = getPrettyList()
-	renderExplorer()
+	listWidget.Clear()
+	redrawParent()
+	items := getPrettyList()
+
+	for i, item := range items {
+		listWidget.SetCell(i, 0, tview.NewTableCell(item.filename).SetTextColor(item.fgColor).SetBackgroundColor(item.bgColor))
+	}
+
+	listWidget.Select(0, 0).SetSelectable(true, false)
+	redrawParent()
 }
 
 func startClock() {
@@ -77,13 +85,10 @@ func startClock() {
 			renderClock(t)
 		}
 	}()
+
 }
 
 func renderClock(t time.Time) {
-	clockWidget.Text = t.Format("   3:04 pm")
-	renderExplorer()
-}
-
-func renderExplorer() {
-	ui.Render(ui.Body)
+	clockWidget.SetText(t.Format("3:04 pm"))
+	redrawParent()
 }
