@@ -1,22 +1,45 @@
 package gui
 
 import (
-	ui "github.com/gizak/termui"
+	"github.com/gdamore/tcell"
+	"github.com/rivo/tview"
 
 	"./explorer"
 )
 
+var app *tview.Application
+var activePage = "explorer"
+
 // Init starts the gui
 func Init() {
-	err := ui.Init()
-	if err != nil {
-		panic(err)
+	app = tview.NewApplication()
+	pages := tview.NewPages()
+	redraw := func() {
+		app.Draw()
 	}
-	defer ui.Close()
-
-	setupEvents()
-
+	pages.AddPage("explorer", explorer.UI(redraw), true, true)
 	explorer.StartExplorer()
 
-	ui.Loop()
+	app.SetInputCapture(exitHandler)
+	if err := app.SetRoot(pages, true).SetFocus(pages).Run(); err != nil {
+		panic(err)
+	}
+}
+
+func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
+	if eventKey.Rune() == 'q' {
+		app.Stop()
+	}
+
+	if activePage == "explorer" {
+		if eventKey.Key() == tcell.KeyLeft {
+			explorer.NavUpDirectory()
+		}
+
+		if eventKey.Key() == tcell.KeyRight {
+			explorer.NavIntoDirectory()
+		}
+	}
+
+	return eventKey
 }
