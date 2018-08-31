@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"text/tabwriter"
 
-	ui "github.com/gizak/termui"
+	"github.com/rivo/tview"
 )
 
 var helpLines = []string{
@@ -20,21 +20,17 @@ var helpLines = []string{
 	"  ESC/F1\tClose Help - Return to Explorer",
 }
 
-var helpList = ui.NewPar("")
+var uiScreen *tview.Grid
+var helpWidget *tview.TextView
 
 // Render the help window
-func Render() {
-	helpList.Text = tabLines(helpLines)
-	helpList.BorderLabel = "Pixi Help "
-	helpList.Height = ui.TermHeight()
+func UI() *tview.Grid {
+	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
+	helpWidget = tview.NewTextView().SetText(tabLines(helpLines))
 
-	ui.Clear()
-	ui.Body.Rows = ui.Body.Rows[:0]
-	ui.Body.AddRows(
-		ui.NewRow(ui.NewCol(12, 0, helpList)))
+	uiScreen.AddItem(helpWidget, 0, 0, 1, 1, 0, 0, false)
 
-	ui.Body.Align()
-	ui.Render(ui.Body)
+	return uiScreen
 }
 
 func tabLines(lines []string) string {
