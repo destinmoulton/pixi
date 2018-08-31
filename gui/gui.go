@@ -10,7 +10,7 @@ import (
 
 var app *tview.Application
 var pages *tview.Pages
-var activePage = "explorer"
+var activePage string
 
 // Init starts the gui
 func Init() {
@@ -21,6 +21,7 @@ func Init() {
 	}
 	pages.AddPage("explorer", explorer.UI(redraw), true, true)
 	pages.AddPage("help", help.UI(), true, false)
+	activePage = "explorer"
 
 	explorer.StartExplorer()
 
@@ -44,7 +45,8 @@ func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	if activePage == "help" {
 		if eventKey.Key() == tcell.KeyEsc || eventKey.Key() == tcell.KeyF1 {
 			switchToPage("explorer")
-			return nil
+			return eventKey
+
 		}
 	}
 
@@ -52,7 +54,7 @@ func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 
 		if eventKey.Key() == tcell.KeyF1 {
 			switchToPage("help")
-			return nil
+			return eventKey
 		}
 
 		if eventKey.Key() == tcell.KeyLeft {
