@@ -16,8 +16,8 @@ var listWidget *tview.Table
 
 //var listBox = tview.NewFrame(listWidget)
 
-// infoWidget termui widget Status Bar
-var infoWidget *tview.TextView
+// pathWidget termui widget Status Bar
+var pathWidget *tview.TextView
 
 var clockWidget *tview.TextView
 
@@ -43,10 +43,10 @@ func UI(redraw func()) *tview.Grid {
 	redrawParent = redraw
 	uiScreen = tview.NewGrid().SetRows(1, 0).SetColumns(0, 10).SetBorders(true)
 	listWidget = tview.NewTable().SetBorders(false)
-	infoWidget = tview.NewTextView().SetTextAlign(tview.AlignLeft).SetText("Test")
+	pathWidget = tview.NewTextView().SetTextAlign(tview.AlignLeft).SetText("Test")
 	clockWidget = tview.NewTextView().SetTextAlign(tview.AlignCenter)
 
-	uiScreen.AddItem(infoWidget, 0, 0, 1, 1, 0, 0, false)
+	uiScreen.AddItem(pathWidget, 0, 0, 1, 1, 0, 0, false)
 	uiScreen.AddItem(clockWidget, 0, 1, 1, 1, 0, 0, false)
 	uiScreen.AddItem(listWidget, 1, 0, 1, 2, 0, 0, true)
 
@@ -59,11 +59,7 @@ func getSelectedFileIndex() int {
 }
 
 func renderStatusMessage(text string) {
-	infoWidget.SetText(text)
-}
-
-func renderPathBar(path string) {
-	listWidget.SetTitle(path)
+	pathWidget.SetText(text)
 }
 
 func renderFileList() {
