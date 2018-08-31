@@ -43,7 +43,7 @@ func UI(redraw func()) *tview.Grid {
 	redrawParent = redraw
 	uiScreen = tview.NewGrid().SetRows(1, 0).SetColumns(0, 10).SetBorders(true)
 	listWidget = tview.NewTable().SetBorders(false)
-	pathWidget = tview.NewTextView().SetTextAlign(tview.AlignLeft).SetText("Test")
+	pathWidget = tview.NewTextView().SetTextAlign(tview.AlignLeft).SetText("")
 	clockWidget = tview.NewTextView().SetTextAlign(tview.AlignCenter)
 
 	uiScreen.AddItem(pathWidget, 0, 0, 1, 1, 0, 0, false)
@@ -58,7 +58,7 @@ func getSelectedFileIndex() int {
 	return sel
 }
 
-func renderStatusMessage(text string) {
+func setPathWidgetText(text string) {
 	pathWidget.SetText(text)
 }
 
