@@ -41,14 +41,15 @@ func ReRender() {
 // UI builds the gui for the explorer list of files
 func UI(redraw func()) *tview.Grid {
 	redrawParent = redraw
-	uiScreen = tview.NewGrid().SetRows(0, 1).SetColumns(0, 10).SetBorders(true)
+	uiScreen = tview.NewGrid().SetRows(1, 0).SetColumns(0, 10).SetBorders(true)
 	listWidget = tview.NewTable().SetBorders(false)
 	infoWidget = tview.NewTextView().SetTextAlign(tview.AlignLeft).SetText("Test")
 	clockWidget = tview.NewTextView().SetTextAlign(tview.AlignCenter)
 
-	uiScreen.AddItem(listWidget, 0, 0, 1, 2, 0, 0, true)
-	uiScreen.AddItem(infoWidget, 1, 0, 1, 1, 0, 0, false)
-	uiScreen.AddItem(clockWidget, 1, 1, 1, 1, 0, 0, false)
+	uiScreen.AddItem(infoWidget, 0, 0, 1, 1, 0, 0, false)
+	uiScreen.AddItem(clockWidget, 0, 1, 1, 1, 0, 0, false)
+	uiScreen.AddItem(listWidget, 1, 0, 1, 2, 0, 0, true)
+
 	return uiScreen
 }
 
