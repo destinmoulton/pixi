@@ -1,37 +1,32 @@
 package explorer
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
 	"path"
 	"sort"
-	"strconv"
 	"strings"
+
+	"github.com/gdamore/tcell"
 
 	"../../config"
 )
 
 var currentPath string
 
-type tvisible struct {
-	beginIndex    int
-	endIndex      int
-	selectedIndex int
+type tpretty struct {
+	filename string
+	fgColor  tcell.Color
+	bgColor  tcell.Color
 }
 
 var filelist struct {
-	visible  tvisible
 	fullInfo []os.FileInfo
-	pretty   []string
+	pretty   []tpretty
 }
 
-// visibleHistory stores the visible/selected history
-var visibleHistory = make(map[string]tvisible)
-
-var maxNumberVisible int
 var shouldShowHidden = false
 
 var filetypes = map[string]string{
@@ -43,15 +38,13 @@ var filetypes = map[string]string{
 
 func initFileList() {
 
-	maxNumberVisible = filelistWidgetDims.Height - 2
-
 	initialPath := config.Get(config.KeyLastOpenDirectory).(string)
 	if !doesDirectoryExist(initialPath) || !isDirectoryReadable(initialPath) {
 		initialPath = config.GetInitialDirectory()
 	}
 	setCurrentPath(initialPath)
 
-	renderPathBar(currentPath)
+	setPathWidgetText(initialPath)
 	populateDirList()
 }
 
@@ -66,6 +59,7 @@ func doesDirectoryExist(path string) bool {
 // in the selected path
 func populateDirList() {
 	filelist.fullInfo = []os.FileInfo{}
+	filelist.pretty = []tpretty{}
 
 	dirList, err := ioutil.ReadDir(currentPath)
 
@@ -94,57 +88,11 @@ func populateDirList() {
 	// Directories first, files after
 	filelist.fullInfo = append(filelist.fullInfo, dirs...)
 	filelist.fullInfo = append(filelist.fullInfo, files...)
-
-	priorVisible, hasHistory := visibleHistory[currentPath]
-	if hasHistory && priorVisible.selectedIndex <= len(filelist.fullInfo)-1 {
-		filelist.visible = priorVisible
-	} else {
-		// Setup the visible list
-		filelist.visible.selectedIndex = 0
-		filelist.visible.beginIndex = 0
-		if len(filelist.fullInfo) > maxNumberVisible {
-			filelist.visible.endIndex = maxNumberVisible - 1
-		} else {
-			filelist.visible.endIndex = len(filelist.fullInfo) - 1
-		}
-		visibleHistory[currentPath] = filelist.visible
-	}
 }
 
-func getPrettyList() []string {
+func getPrettyList() []tpretty {
 	colorifyDirList()
 	return filelist.pretty
-}
-
-// SelectPrevFile switches to the previous file
-func SelectPrevFile() {
-	if filelist.visible.selectedIndex > 0 {
-		filelist.visible.selectedIndex--
-	} else if filelist.visible.selectedIndex == 0 {
-		if filelist.visible.beginIndex > 0 {
-			// Move the visible "fame" up
-			filelist.visible.beginIndex--
-			filelist.visible.endIndex--
-		}
-	}
-	visibleHistory[currentPath] = filelist.visible
-	renderFileList()
-}
-
-// SelectNextFile switches to the next file
-func SelectNextFile() {
-	frameEndIndex := filelist.visible.endIndex - filelist.visible.beginIndex
-	if filelist.visible.selectedIndex < frameEndIndex {
-		filelist.visible.selectedIndex++
-	} else if filelist.visible.selectedIndex == frameEndIndex {
-		if filelist.visible.endIndex < (len(filelist.fullInfo) - 1) {
-			// Move the visible "frame" down
-			filelist.visible.beginIndex++
-			filelist.visible.endIndex++
-		}
-	}
-	visibleHistory[currentPath] = filelist.visible
-	renderFileList()
 }
 
 // NavUpDirectory navigates up to the parent directory
@@ -154,15 +102,14 @@ func NavUpDirectory() {
 		setCurrentPath(path)
 		populateDirList()
 
-		renderPathBar(path)
+		setPathWidgetText(path)
 		renderFileList()
 	}
 }
 
 // NavIntoDirectory navigates into the selected directory
 func NavIntoDirectory() {
-	visibleFilesInfo := filelist.fullInfo[filelist.visible.beginIndex : filelist.visible.endIndex+1]
-	selectedFile := visibleFilesInfo[filelist.visible.selectedIndex]
+	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
 	path := path.Join(currentPath, selectedFile.Name())
 
 	if selectedFile.IsDir() {
@@ -170,7 +117,7 @@ func NavIntoDirectory() {
 		if isDirectoryReadable(path) {
 			setCurrentPath(path)
 			populateDirList()
-			renderPathBar(currentPath)
+			setPathWidgetText(path)
 			renderFileList()
 		}
 	}
@@ -179,13 +126,11 @@ func NavIntoDirectory() {
 // PerformFileAction either opens the dir or opens
 // the selected file
 func PerformFileAction() {
-	visibleFilesInfo := filelist.fullInfo[filelist.visible.beginIndex : filelist.visible.endIndex+1]
-	selectedFile := visibleFilesInfo[filelist.visible.selectedIndex]
+	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
 	path := path.Join(currentPath, selectedFile.Name())
 	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
 		runVideoPlayer(path)
 	}
-	renderFileList()
 }
 
 // ToggleHidden enables/disables showing the hidden files (.<filename>)
@@ -218,37 +163,29 @@ func setCurrentPath(path string) {
 }
 
 func colorifyDirList() {
-	filelist.pretty = []string{}
-	visibleFilesInfo := filelist.fullInfo[filelist.visible.beginIndex : filelist.visible.endIndex+1]
-	for idx, file := range visibleFilesInfo {
-		fgColor := "fg-white"
-		bgColor := ""
+	for _, file := range filelist.fullInfo {
+		fgColor := tcell.ColorWhite
+		bgColor := tcell.ColorBlack
 
-		if filelist.visible.selectedIndex == idx {
-			if file.IsDir() {
-				fgColor = "fg-white"
-				bgColor = "bg-blue"
-			} else if isVideoFile(file.Name()) {
-				fgColor = "fg-black"
-				bgColor = "bg-magenta"
-			} else {
-				fgColor = "fg-black"
-				bgColor = "bg-green"
-			}
-		} else if file.IsDir() {
-			fgColor = "fg-yellow"
-		} else {
-			if isVideoFile(file.Name()) {
-				fgColor = "fg-magenta"
-				bgColor = ""
-			}
+		// if filelist.visible.selectedIndex == idx {
+		// 	if file.IsDir() {
+		// 		fgColor = tview.
+		// 		bgColor = "bg-blue"
+		// 	} else if isVideoFile(file.Name()) {
+		// 		fgColor = "fg-black"
+		// 		bgColor = "bg-magenta"
+		// 	} else {
+		// 		fgColor = "fg-black"
+		// 		bgColor = "bg-green"
+		// 	}
+		if file.IsDir() {
+			fgColor = tcell.ColorYellow
+		} else if isVideoFile(file.Name()) {
+			fgColor = tcell.ColorDarkMagenta
 		}
 
-		// Pad the width of the filename
-		formatString := "[%-" + strconv.Itoa(filelistWidgetDims.Width-3) + "s](%s,%s)"
-		prettyName := fmt.Sprintf(formatString, file.Name(), fgColor, bgColor)
-
-		filelist.pretty = append(filelist.pretty, prettyName)
+		data := tpretty{file.Name(), fgColor, bgColor}
+		filelist.pretty = append(filelist.pretty, data)
 	}
 }
 
