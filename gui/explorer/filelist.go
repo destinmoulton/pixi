@@ -44,7 +44,7 @@ func initFileList() {
 	}
 	setCurrentPath(initialPath)
 
-	renderPathBar(currentPath)
+	setPathWidgetText(initialPath)
 	populateDirList()
 }
 
@@ -102,7 +102,7 @@ func NavUpDirectory() {
 		setCurrentPath(path)
 		populateDirList()
 
-		renderPathBar(path)
+		setPathWidgetText(path)
 		renderFileList()
 	}
 }
@@ -117,7 +117,7 @@ func NavIntoDirectory() {
 		if isDirectoryReadable(path) {
 			setCurrentPath(path)
 			populateDirList()
-			renderPathBar(currentPath)
+			setPathWidgetText(path)
 			renderFileList()
 		}
 	}
