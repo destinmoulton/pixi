@@ -28,7 +28,7 @@ func checkErr(err error) {
 	}
 }
 
-//Init initializes the viper config library
+//Init initializes the config file
 func Init() {
 	configDir = path.Join(getHomeDir(), configSubPath)
 	configFullFilePath = path.Join(configDir, configFilename)
