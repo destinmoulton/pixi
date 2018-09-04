@@ -6,6 +6,7 @@ import (
 
 	"./explorer"
 	"./help"
+	"./history"
 )
 
 var app *tview.Application
@@ -20,10 +21,12 @@ func Init() {
 		app.Draw()
 	}
 	pages.AddPage("explorer", explorer.UI(redraw), true, true)
+	pages.AddPage("history", history.UI(redraw), true, false)
 	pages.AddPage("help", help.UI(), true, false)
 	activePage = "explorer"
 
 	explorer.StartExplorer()
+	history.StartHistory()
 
 	app.SetInputCapture(exitHandler)
 	if err := app.SetRoot(pages, true).SetFocus(pages).Run(); err != nil {
@@ -50,10 +53,22 @@ func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 		}
 	}
 
+	if activePage == "history" {
+		if eventKey.Key() == tcell.KeyEsc || eventKey.Rune() == 'h' {
+			switchToPage("explorer")
+			return eventKey
+		}
+	}
+
 	if activePage == "explorer" {
 
 		if eventKey.Key() == tcell.KeyF1 {
 			switchToPage("help")
+			return eventKey
+		}
+
+		if eventKey.Rune() == 'h' {
+			switchToPage("history")
 			return eventKey
 		}
 
