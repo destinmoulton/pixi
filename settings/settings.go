@@ -23,8 +23,8 @@ func checkErr(err error) {
 	}
 }
 
-//Init initializes the config file(s)
-func Init() {
+// init initializes the config map and file(s)
+func init() {
 	settings = make(map[string]*store)
 
 	configStoreMap := make(storeMap)
@@ -36,7 +36,7 @@ func Init() {
 
 	settings[SetHistory] = new(store)
 	settings[SetHistory].filename = "history.json"
-	settings[SetHistory].data = storeMap{}
+	settings[SetHistory].data = make(storeMap)
 	settings[SetHistory].initStorage()
 }
 
@@ -56,7 +56,7 @@ func Set(set string, key string, value interface{}) {
 func checkIfSetExists(set string) {
 	_, ok := settings[set]
 	if !ok {
-		panic("That config set does not exist.")
+		panic("That config set does not exist. (" + set + ")")
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 
 	"./gui"
 	"./logger"
-	"./settings"
+	_ "./settings"
 )
 
 var shouldLog bool
@@ -22,6 +22,5 @@ func main() {
 		defer fileHandler.Close()
 	}
 
-	settings.Init()
 	gui.Init()
 }
