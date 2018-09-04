@@ -5,48 +5,74 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
+
+	homedir "github.com/mitchellh/go-homedir"
 )
 
-func loadAndMapifyConfig() {
-	configFile, err := ioutil.ReadFile(configFullFilePath)
+type storeMap map[string]interface{}
+
+type store struct {
+	filename string
+	data     storeMap
+}
+
+func (s *store) initStorage(){
+	if(!s.doesFileExist
+}
+
+func loadAndMapifystore() {
+	storeFile, err := ioutil.ReadFile(storeFullFilePath)
 
 	checkErr(err)
 
-	errj := json.Unmarshal([]byte(configFile), &configMap)
+	errj := json.Unmarshal([]byte(storeFile), &storeMap)
 	checkErr(errj)
 }
 
-func writeConfigFile(jsonMap tConfigMap) {
-	data, err := json.Marshal(&jsonMap)
+func (s *store) writeStore() {
+	data, err := json.Marshal(&s.values)
 	checkErr(err)
-	ioutil.WriteFile(configFullFilePath, data, 0666)
+	ioutil.WriteFile(storeFullFilePath, data, 0666)
 }
 
-func createConfigFile() {
-	if !doesConfigPathExist() {
-		errD := os.MkdirAll(configDir, os.ModePerm)
-		if errD != nil {
-			panic(fmt.Errorf("Fatal error creating config directory: %s ", errD))
-		}
+func (s *store) createFile() {
+	if !s.doesBaseDirExist() {
+		errD := os.MkdirAll(s.baseDir(), os.ModePerm)
+		checkErr(errD)
 	}
 
-	initialJSON := make(tConfigMap)
+	initialJSON := make(s.data)
 
 	initialJSON[KeyLastOpenDirectory] = GetInitialDirectory()
 
-	writeConfigFile(initialJSON)
+	writestoreFile(initialJSON)
 }
 
-func doesConfigPathExist() bool {
-	if _, err := os.Stat(configDir); os.IsNotExist(err) {
+func (s *store) baseDir() string {
+	return path.Join(getHomeDir(), storeSubPath)
+}
+
+func (s *store) fullPath() string {
+	return path.Join(s.getStoreDir(), s.filename)
+}
+
+func (s *store) doesBaseDirExist() bool {
+	if _, err := os.Stat(s.baseDir()); os.IsNotExist(err) {
 		return false
 	}
 	return true
 }
 
-func doesConfigFileExist() bool {
-	if _, err := os.Stat(configFullFilePath); os.IsNotExist(err) {
+func (s *store) doesFileExist() bool {
+	if _, err := os.Stat(s.fullPath()); os.IsNotExist(err) {
 		return false
 	}
 	return true
+}
+
+func getHomeDir() string {
+	dir, err := homedir.Dir()
+	checkErr(err)
+	return dir
 }

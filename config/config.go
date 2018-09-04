@@ -3,16 +3,10 @@ package config
 import (
 	"os"
 	"path"
-
-	"github.com/mitchellh/go-homedir"
 )
 
-type tConfigMap map[string]interface{}
-
-var configMap tConfigMap
-
 var configSubPath = ".config/pixi"
-var configDir = ""
+
 var configFilename = "pixi.json"
 var configFullFilePath = ""
 
@@ -27,6 +21,7 @@ func checkErr(err error) {
 
 //Init initializes the config file
 func Init() {
+	var config = new(store)
 	configDir = path.Join(getHomeDir(), configSubPath)
 	configFullFilePath = path.Join(configDir, configFilename)
 
@@ -47,12 +42,6 @@ func Set(key string, value interface{}) {
 	configMap[key] = value
 
 	writeConfigFile(configMap)
-}
-
-func getHomeDir() string {
-	dir, err := homedir.Dir()
-	checkErr(err)
-	return dir
 }
 
 // GetInitialDirectory gets the start directory
