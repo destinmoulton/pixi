@@ -11,7 +11,7 @@ import (
 
 	"github.com/gdamore/tcell"
 
-	"../../config"
+	"../../settings"
 )
 
 var currentPath string
@@ -38,9 +38,9 @@ var filetypes = map[string]string{
 
 func initFileList() {
 
-	initialPath := config.Get(config.KeyLastOpenDirectory).(string)
+	initialPath := settings.Get(settings.SetConfig, settings.KeyLastOpenDirectory).(string)
 	if !doesDirectoryExist(initialPath) || !isDirectoryReadable(initialPath) {
-		initialPath = config.GetInitialDirectory()
+		initialPath = settings.GetInitialDirectory()
 	}
 	setCurrentPath(initialPath)
 
@@ -159,7 +159,7 @@ func runVideoPlayer(selectedFilePath string) {
 func setCurrentPath(path string) {
 	currentPath = path
 
-	config.Set(config.KeyLastOpenDirectory, path)
+	settings.Set(settings.SetConfig, settings.KeyLastOpenDirectory, path)
 }
 
 func colorifyDirList() {
