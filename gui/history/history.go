@@ -32,7 +32,9 @@ func UI(redraw func()) *tview.Grid {
 
 	tableWidget = tview.NewTable().SetBorders(false)
 
-	uiFrame := tview.NewFrame(tableWidget).AddText("History", true, tview.AlignCenter, tcell.ColorGreen)
+	uiFrame := tview.NewFrame(tableWidget).
+		AddText("History", true, tview.AlignCenter, tcell.ColorGreen).
+		AddText("ESC or 'h' to exit history. 'c' to clear the history.", false, tview.AlignCenter, tcell.ColorGreen)
 
 	uiScreen.AddItem(uiFrame, 0, 0, 1, 1, 0, 0, true)
 
