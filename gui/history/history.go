@@ -1,4 +1,4 @@
-package explorer
+package history
 
 import (
 	"path"
