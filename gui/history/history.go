@@ -4,6 +4,8 @@ import (
 	"log"
 	"path"
 
+	"github.com/gdamore/tcell"
+
 	"github.com/rivo/tview"
 
 	"../../settings"
@@ -14,6 +16,7 @@ type viewedHistory []viewedFile
 
 var history viewedHistory
 var redrawParent func()
+var uiFrame *tview.Frame
 var uiScreen *tview.Grid
 var tableWidget *tview.Table
 
@@ -27,9 +30,12 @@ func StartHistory() {
 func UI(redraw func()) *tview.Grid {
 	redrawParent = redraw
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
+
 	tableWidget = tview.NewTable().SetBorders(false)
 
-	uiScreen.AddItem(tableWidget, 0, 0, 1, 1, 0, 0, true)
+	uiFrame := tview.NewFrame(tableWidget).AddText("History", true, tview.AlignCenter, tcell.ColorGreen)
+
+	uiScreen.AddItem(uiFrame, 0, 0, 1, 1, 0, 0, true)
 
 	return uiScreen
 }
