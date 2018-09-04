@@ -53,12 +53,15 @@ func renderHistory() {
 
 func loadCurrentHistory() {
 	opened := settings.Get(settings.SetHistory, "opened")
-	for _, file := range opened.([]interface{}) {
-		// Convert the returned interface (from JSON) into usable map
-		tmp := make(viewedFile)
-		tmp["filename"] = file.(map[string]interface{})["filename"].(string)
-		tmp["path"] = file.(map[string]interface{})["path"].(string)
-		history = append(history, tmp)
+
+	if opened != nil {
+		for _, file := range opened.([]interface{}) {
+			// Convert the returned interface (from JSON) into usable map
+			tmp := make(viewedFile)
+			tmp["filename"] = file.(map[string]interface{})["filename"].(string)
+			tmp["path"] = file.(map[string]interface{})["path"].(string)
+			history = append(history, tmp)
+		}
 	}
 }
 
