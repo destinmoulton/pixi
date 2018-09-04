@@ -1,8 +1,7 @@
-package config
+package settings
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -17,23 +16,26 @@ type store struct {
 	data     storeMap
 }
 
-func (s *store) initStorage(){
-	if(!s.doesFileExist
+func (s *store) initStorage() {
+	if !s.doesFileExist() {
+		s.createFile()
+	}
+	s.loadAndMapifystore()
 }
 
-func loadAndMapifystore() {
-	storeFile, err := ioutil.ReadFile(storeFullFilePath)
+func (s *store) loadAndMapifystore() {
+	storeFile, err := ioutil.ReadFile(s.fullPath())
 
 	checkErr(err)
 
-	errj := json.Unmarshal([]byte(storeFile), &storeMap)
+	errj := json.Unmarshal([]byte(storeFile), &s.data)
 	checkErr(errj)
 }
 
-func (s *store) writeStore() {
-	data, err := json.Marshal(&s.values)
+func (s *store) writeFile() {
+	json, err := json.Marshal(&s.data)
 	checkErr(err)
-	ioutil.WriteFile(storeFullFilePath, data, 0666)
+	ioutil.WriteFile(s.fullPath(), json, 0666)
 }
 
 func (s *store) createFile() {
@@ -46,7 +48,7 @@ func (s *store) createFile() {
 
 	initialJSON[KeyLastOpenDirectory] = GetInitialDirectory()
 
-	writestoreFile(initialJSON)
+	writeFile(initialJSON)
 }
 
 func (s *store) baseDir() string {

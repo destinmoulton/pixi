@@ -1,14 +1,11 @@
-package config
+package settings
 
 import (
 	"os"
-	"path"
 )
 
-var configSubPath = ".config/pixi"
-
-var configFilename = "pixi.json"
-var configFullFilePath = ""
+// Settings is a storage for the main settings
+var Settings store
 
 // KeyLastOpenDirectory is the config key for the last open directory
 const KeyLastOpenDirectory = "LastOpenDirectory"
@@ -21,27 +18,21 @@ func checkErr(err error) {
 
 //Init initializes the config file
 func Init() {
-	var config = new(store)
-	configDir = path.Join(getHomeDir(), configSubPath)
-	configFullFilePath = path.Join(configDir, configFilename)
+	Settings.filename = "pixi.json"
 
-	if !doesConfigFileExist() {
-		createConfigFile()
-	}
-
-	loadAndMapifyConfig()
+	Settings.initStorage()
 }
 
 // Get returns the config value referred to by key
 func Get(key string) interface{} {
-	return configMap[key]
+	return Settings.data[key]
 }
 
 // Set a config value to a key
 func Set(key string, value interface{}) {
-	configMap[key] = value
+	Settings.data[key] = value
 
-	writeConfigFile(configMap)
+	Settings.writeFile()
 }
 
 // GetInitialDirectory gets the start directory
