@@ -29,15 +29,15 @@ func Init() {
 
 	configStoreMap := make(storeMap)
 	configStoreMap[KeyLastOpenDirectory] = GetInitialDirectory()
-	settings["config"] = new(store)
-	settings["config"].filename = "config.json"
-	settings["config"].data = configStoreMap
-	settings["config"].initStorage()
+	settings[SetConfig] = new(store)
+	settings[SetConfig].filename = "config.json"
+	settings[SetConfig].data = configStoreMap
+	settings[SetConfig].initStorage()
 
-	settings["history"] = new(store)
-	settings["history"].filename = "history.json"
-	settings["history"].data = storeMap{}
-	settings["history"].initStorage()
+	settings[SetHistory] = new(store)
+	settings[SetHistory].filename = "history.json"
+	settings[SetHistory].data = storeMap{}
+	settings[SetHistory].initStorage()
 }
 
 // Get returns the config value referred to by key
