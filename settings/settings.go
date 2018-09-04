@@ -4,8 +4,9 @@ import (
 	"os"
 )
 
-// Settings is a storage for the main settings
-var Settings store
+var settings map[string]*store
+
+const settingSubPath = ".config/pixi"
 
 // KeyLastOpenDirectory is the config key for the last open directory
 const KeyLastOpenDirectory = "LastOpenDirectory"
@@ -16,23 +17,37 @@ func checkErr(err error) {
 	}
 }
 
-//Init initializes the config file
+//Init initializes the config file(s)
 func Init() {
-	Settings.filename = "pixi.json"
+	settings["config"] = new(store)
+	settings["config"].filename = "config.json"
+	settings["config"].data = storeMap{KeyLastOpenDirectory: GetInitialDirectory}
+	settings["config"].initStorage()
 
-	Settings.initStorage()
+	settings["history"] = new(store)
+	settings["history"].filename = "history.json"
+	settings["history"].data = storeMap{}
+	settings["history"].initStorage()
 }
 
 // Get returns the config value referred to by key
-func Get(key string) interface{} {
-	return Settings.data[key]
+func Get(set string, key string) interface{} {
+	checkIfSetExists(set)
+	return settings[set].data[key]
 }
 
 // Set a config value to a key
-func Set(key string, value interface{}) {
-	Settings.data[key] = value
+func Set(set string, key string, value interface{}) {
+	checkIfSetExists(set)
+	settings[set].data[key] = value
+	settings[set].writeDataToFile()
+}
 
-	Settings.writeFile()
+func checkIfSetExists(set string) {
+	_, ok := settings[set]
+	if !ok {
+		panic("That config set does not exist.")
+	}
 }
 
 // GetInitialDirectory gets the start directory
