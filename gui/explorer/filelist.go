@@ -4,13 +4,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"path"
 	"sort"
 	"strings"
 
 	"github.com/gdamore/tcell"
 
+	"../../player"
 	"../../settings"
 	"../history"
 )
@@ -29,13 +29,6 @@ var filelist struct {
 }
 
 var shouldShowHidden = false
-
-var filetypes = map[string]string{
-	".avi":  "video",
-	".mpeg": "video",
-	".mkv":  "video",
-	".mp4":  "video",
-}
 
 func initFileList() {
 
@@ -129,9 +122,9 @@ func NavIntoDirectory() {
 func PerformFileAction() {
 	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
 	path := path.Join(currentPath, selectedFile.Name())
-	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
+	if !selectedFile.IsDir() && player.IsVideoFile(selectedFile.Name()) {
 		history.Add(path)
-		runVideoPlayer(path)
+		player.PlayVideo(path)
 	}
 }
 
@@ -149,15 +142,6 @@ func isDirectoryReadable(dir string) bool {
 	return true
 }
 
-func runVideoPlayer(selectedFilePath string) {
-	cmd := exec.Command("xterm", "-e", "omxplayer", "-b", selectedFilePath)
-	err := cmd.Run()
-
-	if err != nil {
-
-	}
-}
-
 func setCurrentPath(path string) {
 	currentPath = path
 
@@ -169,31 +153,13 @@ func colorifyDirList() {
 		fgColor := tcell.ColorWhite
 		bgColor := tcell.ColorBlack
 
-		// if filelist.visible.selectedIndex == idx {
-		// 	if file.IsDir() {
-		// 		fgColor = tview.
-		// 		bgColor = "bg-blue"
-		// 	} else if isVideoFile(file.Name()) {
-		// 		fgColor = "fg-black"
-		// 		bgColor = "bg-magenta"
-		// 	} else {
-		// 		fgColor = "fg-black"
-		// 		bgColor = "bg-green"
-		// 	}
 		if file.IsDir() {
 			fgColor = tcell.ColorYellow
-		} else if isVideoFile(file.Name()) {
+		} else if player.IsVideoFile(file.Name()) {
 			fgColor = tcell.ColorDarkMagenta
 		}
 
 		data := tpretty{file.Name(), fgColor, bgColor}
 		filelist.pretty = append(filelist.pretty, data)
 	}
-}
-
-func isVideoFile(filename string) bool {
-	if val, ok := filetypes[path.Ext(filename)]; ok == true && val == "video" {
-		return true
-	}
-	return false
 }
