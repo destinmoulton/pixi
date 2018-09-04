@@ -58,32 +58,7 @@ func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	}
 
 	if activePage == "explorer" {
-
-		if eventKey.Key() == tcell.KeyF1 {
-			switchToPage("help")
-			return eventKey
-		}
-
-		if eventKey.Rune() == 'h' {
-			switchToPage("history")
-			return eventKey
-		}
-
-		if eventKey.Key() == tcell.KeyLeft {
-			explorer.NavUpDirectory()
-			return nil
-		}
-
-		if eventKey.Key() == tcell.KeyRight {
-			explorer.NavIntoDirectory()
-			return nil
-		}
-
-		if eventKey.Key() == tcell.KeyEnter {
-			explorer.PerformFileAction()
-			return nil
-		}
-
+		return explorer.HandleEvents(eventKey, switchToPage)
 	}
 
 	return eventKey
