@@ -54,10 +54,7 @@ func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	}
 
 	if activePage == "history" {
-		if eventKey.Key() == tcell.KeyEsc || eventKey.Rune() == 'h' {
-			switchToPage("explorer")
-			return eventKey
-		}
+		return history.HandleEvents(eventKey, switchToPage)
 	}
 
 	if activePage == "explorer" {
