@@ -1,6 +1,7 @@
 package history
 
 import (
+	"log"
 	"path"
 
 	"github.com/rivo/tview"
@@ -11,18 +12,20 @@ import (
 type viewedFile map[string]string
 type viewedHistory []viewedFile
 
+var history viewedHistory
+var redrawParent func()
 var uiScreen *tview.Grid
 var tableWidget *tview.Table
-
-var history viewedHistory
 
 // StartHistory initializes the history viewer
 func StartHistory() {
 	loadCurrentHistory()
+	renderHistory()
 }
 
 // UI initializes the history ui
-func UI() *tview.Grid {
+func UI(redraw func()) *tview.Grid {
+	redrawParent = redraw
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
 	tableWidget = tview.NewTable().SetBorders(false)
 
@@ -31,9 +34,21 @@ func UI() *tview.Grid {
 	return uiScreen
 }
 
+func renderHistory() {
+	tableWidget.Clear()
+	redrawParent()
+
+	for i, item := range history {
+		tableWidget.SetCell(i, 0, tview.NewTableCell(item["filename"]))
+	}
+
+	tableWidget.Select(0, 0).SetSelectable(true, false)
+	redrawParent()
+}
+
 func loadCurrentHistory() {
 	opened := settings.Get(settings.SetHistory, "opened")
-
+	log.Println("loadCurrentHistory opened", opened)
 	for _, file := range opened.([]interface{}) {
 		// Convert the returned interface (from JSON) into usable map
 		tmp := make(viewedFile)
@@ -41,9 +56,11 @@ func loadCurrentHistory() {
 		tmp["path"] = file.(map[string]interface{})["path"].(string)
 		history = append(history, tmp)
 	}
+	log.Println("loadCurrentHistory after", history)
 }
 
-func (h *viewedHistory) Add(fullPath string) {
+// Add unshifts(prepends) a file and path onto the history
+func Add(fullPath string) {
 	_, filename := path.Split(fullPath)
 
 	file := make(viewedFile)
@@ -51,7 +68,9 @@ func (h *viewedHistory) Add(fullPath string) {
 	file["path"] = fullPath
 
 	// unshift the new element onto the front of the history
-	*h = append(viewedHistory{file}, *h...)
+	history = append(viewedHistory{file}, history...)
+	log.Println("Add", history)
+	renderHistory()
 
-	settings.Set(settings.SetHistory, "opened", h)
+	settings.Set(settings.SetHistory, "opened", history)
 }
