@@ -26,7 +26,6 @@ var clockTicker *time.Ticker
 
 // StartExplorer initializes the File Explorer
 func StartExplorer() {
-	initHistory()
 	initFileList()
 
 	renderFileList()
