@@ -6,6 +6,12 @@ import (
 
 var settings map[string]*store
 
+// SetConfig is the name of the config setting
+const SetConfig = "config"
+
+// SetHistory is the name of the history setting
+const SetHistory = "history"
+
 const settingSubPath = ".config/pixi"
 
 // KeyLastOpenDirectory is the config key for the last open directory
@@ -19,9 +25,13 @@ func checkErr(err error) {
 
 //Init initializes the config file(s)
 func Init() {
+	settings = make(map[string]*store)
+
+	configStoreMap := make(storeMap)
+	configStoreMap[KeyLastOpenDirectory] = GetInitialDirectory()
 	settings["config"] = new(store)
 	settings["config"].filename = "config.json"
-	settings["config"].data = storeMap{KeyLastOpenDirectory: GetInitialDirectory}
+	settings["config"].data = configStoreMap
 	settings["config"].initStorage()
 
 	settings["history"] = new(store)
