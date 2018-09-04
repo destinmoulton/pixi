@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 
-	"./config"
 	"./gui"
 	"./logger"
+	_ "./settings"
 )
 
 var shouldLog bool
@@ -22,6 +22,5 @@ func main() {
 		defer fileHandler.Close()
 	}
 
-	config.Init()
 	gui.Init()
 }
