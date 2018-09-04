@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path"
 	"sort"
 	"strings"
 
@@ -12,7 +11,6 @@ import (
 
 	"../../player"
 	"../../settings"
-	"../history"
 )
 
 var currentPath string
@@ -87,52 +85,6 @@ func populateDirList() {
 func getPrettyList() []tpretty {
 	colorifyDirList()
 	return filelist.pretty
-}
-
-// NavUpDirectory navigates up to the parent directory
-func NavUpDirectory() {
-	path := path.Clean(currentPath + "/../")
-	if isDirectoryReadable(path) {
-		setCurrentPath(path)
-		populateDirList()
-
-		setPathWidgetText(path)
-		renderFileList()
-	}
-}
-
-// NavIntoDirectory navigates into the selected directory
-func NavIntoDirectory() {
-	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
-	path := path.Join(currentPath, selectedFile.Name())
-
-	if selectedFile.IsDir() {
-
-		if isDirectoryReadable(path) {
-			setCurrentPath(path)
-			populateDirList()
-			setPathWidgetText(path)
-			renderFileList()
-		}
-	}
-}
-
-// PerformFileAction either opens the dir or opens
-// the selected file
-func PerformFileAction() {
-	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
-	path := path.Join(currentPath, selectedFile.Name())
-	if !selectedFile.IsDir() && player.IsVideoFile(selectedFile.Name()) {
-		history.Add(path)
-		player.PlayVideo(path)
-	}
-}
-
-// ToggleHidden enables/disables showing the hidden files (.<filename>)
-func ToggleHidden() {
-	shouldShowHidden = !shouldShowHidden
-	populateDirList()
-	renderFileList()
 }
 
 func isDirectoryReadable(dir string) bool {
