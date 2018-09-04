@@ -66,7 +66,7 @@ func loadCurrentHistory() {
 }
 
 func clearHistory() {
-	history := make(viewedHistory, 0)
+	history = make(viewedHistory, 0)
 	renderHistory()
 	settings.Set(settings.SetHistory, "opened", history)
 }

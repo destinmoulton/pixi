@@ -21,5 +21,10 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 		return nil
 	}
 
+	if eventKey.Rune() == 'c' {
+		clearHistory()
+		return nil
+	}
+
 	return eventKey
 }
