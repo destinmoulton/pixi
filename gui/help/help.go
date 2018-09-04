@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"text/tabwriter"
 
+	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
 
@@ -28,7 +29,9 @@ func UI() *tview.Grid {
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
 	helpWidget = tview.NewTextView().SetText(tabLines(helpLines))
 
-	uiScreen.AddItem(helpWidget, 0, 0, 1, 1, 0, 0, false)
+	uiFrame := tview.NewFrame(helpWidget).AddText("Help", true, tview.AlignCenter, tcell.ColorDarkMagenta)
+
+	uiScreen.AddItem(uiFrame, 0, 0, 1, 1, 0, 0, false)
 
 	return uiScreen
 }
