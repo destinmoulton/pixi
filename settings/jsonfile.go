@@ -32,7 +32,7 @@ func (s *store) loadAndMapifystore() {
 	checkErr(errj)
 }
 
-func (s *store) writeFile() {
+func (s *store) writeDataToFile() {
 	json, err := json.Marshal(&s.data)
 	checkErr(err)
 	ioutil.WriteFile(s.fullPath(), json, 0666)
@@ -44,19 +44,16 @@ func (s *store) createFile() {
 		checkErr(errD)
 	}
 
-	initialJSON := make(s.data)
-
-	initialJSON[KeyLastOpenDirectory] = GetInitialDirectory()
-
-	writeFile(initialJSON)
+	// Create the default file
+	s.writeDataToFile()
 }
 
 func (s *store) baseDir() string {
-	return path.Join(getHomeDir(), storeSubPath)
+	return path.Join(getHomeDir(), settingSubPath)
 }
 
 func (s *store) fullPath() string {
-	return path.Join(s.getStoreDir(), s.filename)
+	return path.Join(s.baseDir(), s.filename)
 }
 
 func (s *store) doesBaseDirExist() bool {
