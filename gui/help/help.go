@@ -15,7 +15,8 @@ var helpLines = []string{
 	"  Left Arrow\tNavigate up to parent directory.",
 	"  Right Arrow\tNavigate into selected directory.",
 	"  Enter/Return\tPlay selected file.",
-	"  h\tShow history of played files.",
+	"  h\tShow History of played files.",
+	"  c\tClear History of played files.",
 	"  q or Ctrl+c   \tQuit/Exit Pixi",
 	"  \t",
 	"  ESC/F1\tClose Help - Return to Explorer",
@@ -29,7 +30,9 @@ func UI() *tview.Grid {
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
 	helpWidget = tview.NewTextView().SetText(tabLines(helpLines))
 
-	uiFrame := tview.NewFrame(helpWidget).AddText("Help", true, tview.AlignCenter, tcell.ColorDarkMagenta)
+	uiFrame := tview.NewFrame(helpWidget).
+		AddText("Help", true, tview.AlignCenter, tcell.ColorDarkMagenta).
+		AddText("ESC or F1 to leave Help", false, tview.AlignCenter, tcell.ColorDarkMagenta)
 
 	uiScreen.AddItem(uiFrame, 0, 0, 1, 1, 0, 0, false)
 
