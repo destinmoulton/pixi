@@ -129,6 +129,7 @@ func PerformFileAction() {
 	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
 	path := path.Join(currentPath, selectedFile.Name())
 	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
+		history.add(path)
 		runVideoPlayer(path)
 	}
 }
