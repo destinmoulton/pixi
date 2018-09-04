@@ -65,6 +65,12 @@ func loadCurrentHistory() {
 	}
 }
 
+func clearHistory() {
+	history := make(viewedHistory, 0)
+	renderHistory()
+	settings.Set(settings.SetHistory, "opened", history)
+}
+
 func getSelectedFile() viewedFile {
 	row, _ := tableWidget.GetSelection()
 	return history[row]
