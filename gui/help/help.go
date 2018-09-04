@@ -15,7 +15,7 @@ var helpLines = []string{
 	"  Left Arrow\tNavigate up to parent directory.",
 	"  Right Arrow\tNavigate into selected directory.",
 	"  Enter/Return\tPlay selected file.",
-	"  h\tToggle hidden files and folders.",
+	"  h\tShow history of played files.",
 	"  q or Ctrl+c   \tQuit/Exit Pixi",
 	"  \t",
 	"  ESC/F1\tClose Help - Return to Explorer",
