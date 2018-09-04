@@ -62,6 +62,11 @@ func loadCurrentHistory() {
 	}
 }
 
+func getSelectedFile() viewedFile {
+	row, _ := tableWidget.GetSelection()
+	return history[row]
+}
+
 // Add unshifts(prepends) a file and path onto the history
 func Add(fullPath string) {
 	_, filename := path.Split(fullPath)
