@@ -3,16 +3,35 @@ package history
 import (
 	"path"
 
+	"github.com/rivo/tview"
+
 	"../../settings"
 )
 
 type viewedFile map[string]string
-
 type viewedHistory []viewedFile
+
+var uiScreen *tview.Grid
+var tableWidget *tview.Table
 
 var history viewedHistory
 
-func initHistory() {
+// StartHistory initializes the history viewer
+func StartHistory() {
+	loadCurrentHistory()
+}
+
+// UI initializes the history ui
+func UI() *tview.Grid {
+	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
+	tableWidget = tview.NewTable().SetBorders(false)
+
+	uiScreen.AddItem(tableWidget, 0, 0, 1, 1, 0, 0, true)
+
+	return uiScreen
+}
+
+func loadCurrentHistory() {
 	opened := settings.Get(settings.SetHistory, "opened")
 
 	for _, file := range opened.([]interface{}) {
