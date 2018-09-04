@@ -23,7 +23,7 @@ var helpLines = []string{
 var uiScreen *tview.Grid
 var helpWidget *tview.TextView
 
-// Render the help window
+// UI creates the help window
 func UI() *tview.Grid {
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
 	helpWidget = tview.NewTextView().SetText(tabLines(helpLines))
