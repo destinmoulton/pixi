@@ -1,7 +1,6 @@
 package history
 
 import (
-	"log"
 	"path"
 
 	"github.com/gdamore/tcell"
@@ -26,7 +25,7 @@ func StartHistory() {
 	renderHistory()
 }
 
-// UI initializes the history ui
+// UI initializes the history ui and returns the grid
 func UI(redraw func()) *tview.Grid {
 	redrawParent = redraw
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
@@ -54,7 +53,6 @@ func renderHistory() {
 
 func loadCurrentHistory() {
 	opened := settings.Get(settings.SetHistory, "opened")
-	log.Println("loadCurrentHistory opened", opened)
 	for _, file := range opened.([]interface{}) {
 		// Convert the returned interface (from JSON) into usable map
 		tmp := make(viewedFile)
@@ -62,7 +60,6 @@ func loadCurrentHistory() {
 		tmp["path"] = file.(map[string]interface{})["path"].(string)
 		history = append(history, tmp)
 	}
-	log.Println("loadCurrentHistory after", history)
 }
 
 // Add unshifts(prepends) a file and path onto the history
@@ -75,7 +72,7 @@ func Add(fullPath string) {
 
 	// unshift the new element onto the front of the history
 	history = append(viewedHistory{file}, history...)
-	log.Println("Add", history)
+
 	renderHistory()
 
 	settings.Set(settings.SetHistory, "opened", history)
