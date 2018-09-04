@@ -24,7 +24,7 @@ func initHistory() {
 	}
 }
 
-func (h *viewedHistory) add(fullPath string) {
+func (h *viewedHistory) Add(fullPath string) {
 	_, filename := path.Split(fullPath)
 
 	file := make(viewedFile)

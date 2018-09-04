@@ -12,6 +12,7 @@ import (
 	"github.com/gdamore/tcell"
 
 	"../../settings"
+	"../history"
 )
 
 var currentPath string
@@ -129,7 +130,7 @@ func PerformFileAction() {
 	selectedFile := filelist.fullInfo[getSelectedFileIndex()]
 	path := path.Join(currentPath, selectedFile.Name())
 	if !selectedFile.IsDir() && isVideoFile(selectedFile.Name()) {
-		history.add(path)
+		history.Add(path)
 		runVideoPlayer(path)
 	}
 }
