@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"sort"
 	"strings"
 
@@ -124,4 +125,13 @@ func doesDirectoryExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func getFilelistIndexOf(pathToFind string) int {
+	for i, file := range filelist.fullInfo {
+		if path.Join(currentPath, file.Name()) == pathToFind {
+			return i
+		}
+	}
+	return -1
 }
