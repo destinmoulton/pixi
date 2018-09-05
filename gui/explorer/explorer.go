@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/rivo/tview"
-
-	"../../types"
 )
 
 var redrawParent func()
@@ -14,14 +12,10 @@ var uiScreen *tview.Grid
 // tableWidget termui widget List
 var tableWidget *tview.Table
 
-//var listBox = tview.NewFrame(tableWidget)
-
 // pathWidget termui widget Status Bar
 var pathWidget *tview.TextView
 
 var clockWidget *tview.TextView
-
-var tableWidgetDims types.WidgetDimensions
 var clockTicker *time.Ticker
 
 // StartExplorer initializes the File Explorer
