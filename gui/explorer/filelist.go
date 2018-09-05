@@ -40,13 +40,6 @@ func initFileList() {
 	populateDirList()
 }
 
-func doesDirectoryExist(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
 // populateDirList builds the list of elements
 // in the selected path
 func populateDirList() {
@@ -87,19 +80,6 @@ func getPrettyList() []tpretty {
 	return filelist.pretty
 }
 
-func isDirectoryReadable(dir string) bool {
-	if _, err := ioutil.ReadDir(dir); err != nil {
-		return false
-	}
-	return true
-}
-
-func setCurrentPath(path string) {
-	currentPath = path
-
-	settings.Set(settings.SetConfig, settings.KeyLastOpenDirectory, path)
-}
-
 func colorifyDirList() {
 	for _, file := range filelist.fullInfo {
 		fgColor := tcell.ColorWhite
@@ -114,4 +94,24 @@ func colorifyDirList() {
 		data := tpretty{file.Name(), fgColor, bgColor}
 		filelist.pretty = append(filelist.pretty, data)
 	}
+}
+
+func setCurrentPath(path string) {
+	currentPath = path
+
+	settings.Set(settings.SetConfig, settings.KeyLastOpenDirectory, path)
+}
+
+func isDirectoryReadable(dir string) bool {
+	if _, err := ioutil.ReadDir(dir); err != nil {
+		return false
+	}
+	return true
+}
+
+func doesDirectoryExist(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }
