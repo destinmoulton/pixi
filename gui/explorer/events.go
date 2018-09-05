@@ -38,6 +38,7 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 }
 
 // navUpDirectory navigates up to the parent directory
+// highlights
 func navUpDirectory() {
 	path := path.Clean(currentPath + "/../")
 	oldPath := currentPath
@@ -45,6 +46,8 @@ func navUpDirectory() {
 	changeDirectory(path)
 	index := getFilelistIndexOf(oldPath)
 
+	// Scroll to top before going to selected
+	// so it doesn't appear at top
 	uiScrollToTop()
 	uiSetSelectedFileIndex(index)
 	redrawParent()
