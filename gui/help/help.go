@@ -11,12 +11,13 @@ import (
 
 var helpLines = []string{
 	"  \t",
-	"  Up/Down Arrows     \tSelect directories/files.",
+	"  Up or Down Arrows     \tSelect directories/files.",
 	"  Left Arrow\tNavigate up to parent directory.",
 	"  Right Arrow\tNavigate into selected directory.",
 	"  Enter/Return\tPlay selected file.",
 	"  h\tShow History of played files.",
 	"  c\tClear History of played files.",
+	"  > or .\tToggle viewing hidden files.",
 	"  q or Ctrl+c   \tQuit/Exit Pixi",
 	"  \t",
 	"  ESC/F1\tClose Help - Return to Explorer",
