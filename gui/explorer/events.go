@@ -20,6 +20,11 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 		return eventKey
 	}
 
+	if eventKey.Rune() == '>' || eventKey.Rune() == '.' {
+		toggleHidden()
+		return eventKey
+	}
+
 	if eventKey.Key() == tcell.KeyLeft {
 		navUpDirectory()
 		return nil

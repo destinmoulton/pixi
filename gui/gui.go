@@ -40,6 +40,7 @@ func switchToPage(page string) {
 }
 
 func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
+
 	if eventKey.Rune() == 'q' {
 		app.Stop()
 		return nil
