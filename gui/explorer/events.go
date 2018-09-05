@@ -40,13 +40,9 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 // navUpDirectory navigates up to the parent directory
 func navUpDirectory() {
 	path := path.Clean(currentPath + "/../")
-	if isDirectoryReadable(path) {
-		setCurrentPath(path)
-		populateDirList()
+	//oldChildPath := currentPath
+	changeDirectory(path)
 
-		setPathWidgetText(path)
-		renderFileList()
-	}
 }
 
 // navIntoDirectory navigates into the selected directory
@@ -55,13 +51,7 @@ func navIntoDirectory() {
 	path := path.Join(currentPath, selectedFile.Name())
 
 	if selectedFile.IsDir() {
-
-		if isDirectoryReadable(path) {
-			setCurrentPath(path)
-			populateDirList()
-			setPathWidgetText(path)
-			renderFileList()
-		}
+		changeDirectory(path)
 	}
 }
 

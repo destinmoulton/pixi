@@ -40,6 +40,16 @@ func initFileList() {
 	populateDirList()
 }
 
+func changeDirectory(path string) {
+	if isDirectoryReadable(path) {
+		setCurrentPath(path)
+		populateDirList()
+
+		setPathWidgetText(path)
+		renderFileList()
+	}
+}
+
 // populateDirList builds the list of elements
 // in the selected path
 func populateDirList() {
