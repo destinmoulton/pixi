@@ -11,6 +11,9 @@ var uiForm *tview.Form
 // UI creates the help window
 func UI() *tview.Grid {
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
+	uiForm = tview.NewForm().
+		AddInputField("omxmplayer command", "", 40, nil, nil).
+		AddButton("Save", nil)
 
 	uiFrame := tview.NewFrame(uiForm).
 		AddText("Settings", true, tview.AlignCenter, tcell.ColorDarkMagenta).
