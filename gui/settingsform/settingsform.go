@@ -3,6 +3,8 @@ package settingsform
 import (
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
+
+	"../../settings"
 )
 
 var uiScreen *tview.Grid
@@ -10,9 +12,11 @@ var uiForm *tview.Form
 
 // UI creates the help window
 func UI() *tview.Grid {
+	command := settings.Get(settings.SetConfig, settings.KeyOmxplayerCommand).(string)
+
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
 	uiForm = tview.NewForm().
-		AddInputField("omxmplayer command", "", 40, nil, nil).
+		AddInputField("omxmplayer command", command, 40, nil, nil).
 		AddButton("Save", nil)
 
 	uiFrame := tview.NewFrame(uiForm).
