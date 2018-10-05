@@ -16,6 +16,7 @@ const settingSubPath = ".config/pixi"
 
 // KeyLastOpenDirectory is the config key for the last open directory
 const KeyLastOpenDirectory = "LastOpenDirectory"
+const KeyOmxplayerCommand = "OmxplayerCommand"
 
 func checkErr(err error) {
 	if err != nil {
