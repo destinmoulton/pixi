@@ -20,6 +20,11 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 		return eventKey
 	}
 
+	if eventKey.Rune() == 's' {
+		switchToPage("settings")
+		return eventKey
+	}
+
 	if eventKey.Rune() == '>' || eventKey.Rune() == '.' {
 		toggleHidden()
 		return eventKey
