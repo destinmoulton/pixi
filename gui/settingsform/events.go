@@ -1,4 +1,4 @@
-package settings
+package settingsform
 
 import "github.com/gdamore/tcell"
 

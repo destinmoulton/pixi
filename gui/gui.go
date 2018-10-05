@@ -7,7 +7,7 @@ import (
 	"./explorer"
 	"./help"
 	"./history"
-	"./settings"
+	"./settingsform"
 )
 
 var app *tview.Application
@@ -24,7 +24,7 @@ func Init() {
 	pages.AddPage("explorer", explorer.UI(redraw), true, true)
 	pages.AddPage("history", history.UI(redraw), true, false)
 	pages.AddPage("help", help.UI(), true, false)
-	pages.AddPage("settings", settings.UI(), true, false)
+	pages.AddPage("settingsform", settingsform.UI(), true, false)
 	activePage = "explorer"
 
 	explorer.StartExplorer()
@@ -60,8 +60,8 @@ func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 		return explorer.HandleEvents(eventKey, switchToPage)
 	}
 
-	if activePage == "settings" {
-		return settings.HandleEvents(eventKey, switchToPage)
+	if activePage == "settingsform" {
+		return settingsform.HandleEvents(eventKey, switchToPage)
 	}
 
 	return eventKey

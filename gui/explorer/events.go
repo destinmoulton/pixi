@@ -21,7 +21,7 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 	}
 
 	if eventKey.Rune() == 's' {
-		switchToPage("settings")
+		switchToPage("settingsform")
 		return eventKey
 	}
 
