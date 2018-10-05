@@ -16,6 +16,8 @@ const settingSubPath = ".config/pixi"
 
 // KeyLastOpenDirectory is the config key for the last open directory
 const KeyLastOpenDirectory = "LastOpenDirectory"
+
+// KeyOmxplayerCommand is the config key for the omxplayer command
 const KeyOmxplayerCommand = "OmxplayerCommand"
 
 func checkErr(err error) {
@@ -30,6 +32,7 @@ func init() {
 
 	configStoreMap := make(storeMap)
 	configStoreMap[KeyLastOpenDirectory] = GetInitialDirectory()
+	configStoreMap[KeyOmxplayerCommand] = "xterm -e omxplayer -b"
 	settings[SetConfig] = new(store)
 	settings[SetConfig].filename = "config.json"
 	settings[SetConfig].data = configStoreMap
