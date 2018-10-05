@@ -1,4 +1,4 @@
-package help
+package settings
 
 import (
 	"github.com/gdamore/tcell"
