@@ -1,37 +1,33 @@
 package help
 
 import (
-	"bytes"
-	"fmt"
-	"text/tabwriter"
-
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
 
-var helpLines = []string{
-	"  \t",
-	"  Up or Down Arrows     \tSelect directories/files.",
-	"  Left Arrow\tNavigate up to parent directory.",
-	"  Right Arrow\tNavigate into selected directory.",
-	"  Enter/Return\tPlay selected file.",
-	"  h\tShow History of played files.",
-	"  c\tClear History of played files.",
-	"  > or .\tToggle viewing hidden files.",
-	"  q or Ctrl+c   \tQuit/Exit Pixi",
-	"  \t",
-	"  ESC/F1\tClose Help - Return to Explorer",
+var helpItems = [][]string{
+	{"up/down arrows", "Select directories/files."},
+	{"left arrow", "Navigate to parent directory"},
+	{"right arrow", "Navigate into directory"},
+	{"enter/return", "Play selected file with omxplayer."},
+	{"h", "Show history of played files"},
+	{"c", "Clear history of played files (when history open)"},
+	{">/.", "Toggle viewing hidden files."},
+	{"q/Ctrl+c", "Quit pixi"},
+	{"ESC/F1", "Close Help - Return to Explorer"},
 }
 
 var uiScreen *tview.Grid
-var helpWidget *tview.TextView
+var tableWidget *tview.Table
 
 // UI creates the help window
 func UI() *tview.Grid {
 	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
-	helpWidget = tview.NewTextView().SetText(tabLines(helpLines))
+	tableWidget = tview.NewTable().SetBorders(false)
 
-	uiFrame := tview.NewFrame(helpWidget).
+	populateTable()
+
+	uiFrame := tview.NewFrame(tableWidget).
 		AddText("Help", true, tview.AlignCenter, tcell.ColorDarkMagenta).
 		AddText("ESC or F1 to leave Help", false, tview.AlignCenter, tcell.ColorDarkMagenta)
 
@@ -40,16 +36,11 @@ func UI() *tview.Grid {
 	return uiScreen
 }
 
-func tabLines(lines []string) string {
-	w := new(tabwriter.Writer)
-
-	buf := new(bytes.Buffer)
-	w.Init(buf, 0, 10, 0, ' ', 0)
-	for _, line := range lines {
-		fmt.Fprintln(w, line)
+func populateTable() {
+	tableWidget.Clear()
+	for i := range helpItems {
+		for j, col := range helpItems[i] {
+			tableWidget.SetCell(i, j, tview.NewTableCell(col).SetExpansion(1))
+		}
 	}
-	fmt.Fprintln(w)
-	w.Flush()
-
-	return buf.String()
 }
