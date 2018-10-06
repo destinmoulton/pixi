@@ -3,6 +3,9 @@ package player
 import (
 	"os/exec"
 	"path"
+	"strings"
+
+	"../settings"
 )
 
 var filetypes = map[string]string{
@@ -14,7 +17,11 @@ var filetypes = map[string]string{
 
 // PlayVideo starts the video player
 func PlayVideo(selectedFilePath string) {
-	cmd := exec.Command("xterm", "-e", "omxplayer", "-b", selectedFilePath)
+	cmdString := settings.Get(settings.SetConfig, settings.KeyOmxplayerCommand).(string)
+	cmdParts := strings.Split(cmdString, " ")
+	cmdParts = append(cmdParts, selectedFilePath)
+
+	cmd := exec.Command(cmdParts[0], cmdParts[1:]...)
 	err := cmd.Run()
 
 	if err != nil {
