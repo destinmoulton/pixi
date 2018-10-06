@@ -1,6 +1,7 @@
 package settingsform
 
 import (
+	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 
 	"../../settings"
@@ -20,6 +21,8 @@ func UI(redraw func()) *tview.Form {
 		AddInputField("omxmplayer command", command, 40, nil, handleCommandChange).
 		AddButton("Save", handlePressSave).
 		AddButton("Cancel", handlePressCancel)
+
+	uiForm.SetFieldBackgroundColor(tcell.ColorGold).SetFieldTextColor(tcell.ColorBlack)
 	uiForm.SetBorder(true).SetTitle("Settings")
 
 	return uiForm
