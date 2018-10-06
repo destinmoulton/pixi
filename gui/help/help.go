@@ -12,6 +12,7 @@ var helpItems = [][]string{
 	{"enter/return", "Play selected file with omxplayer."},
 	{"h", "Show history of played files"},
 	{"c", "Clear history of played files (when history open)"},
+	{"s", "Open player settings"},
 	{">/.", "Toggle viewing hidden files."},
 	{"q/Ctrl+c", "Quit pixi"},
 	{"ESC/F1", "Close Help - Return to Explorer"},
