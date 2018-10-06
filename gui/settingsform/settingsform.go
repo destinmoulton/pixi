@@ -1,29 +1,39 @@
 package settingsform
 
 import (
-	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 
 	"../../settings"
 )
 
+var command string
+var redrawParent func()
 var uiScreen *tview.Grid
 var uiForm *tview.Form
 
 // UI creates the help window
-func UI() *tview.Grid {
-	command := settings.Get(settings.SetConfig, settings.KeyOmxplayerCommand).(string)
+func UI(redraw func()) *tview.Form {
+	redrawParent = redraw
+	command = settings.Get(settings.SetConfig, settings.KeyOmxplayerCommand).(string)
 
-	uiScreen = tview.NewGrid().SetRows(0).SetColumns(0).SetBorders(true)
 	uiForm = tview.NewForm().
-		AddInputField("omxmplayer command", command, 40, nil, nil).
-		AddButton("Save", nil)
+		AddInputField("omxmplayer command", command, 40, nil, handleCommandChange).
+		AddButton("Save", handlePressSave).
+		AddButton("Cancel", handlePressCancel)
+	uiForm.SetBorder(true).SetTitle("Settings")
 
-	uiFrame := tview.NewFrame(uiForm).
-		AddText("Settings", true, tview.AlignCenter, tcell.ColorDarkMagenta).
-		AddText("ESC or s to leave Settings", false, tview.AlignCenter, tcell.ColorDarkMagenta)
+	return uiForm
+}
 
-	uiScreen.AddItem(uiFrame, 0, 0, 1, 1, 0, 0, false)
+func handleCommandChange(cmd string) {
+	command = cmd
+}
 
-	return uiScreen
+func handlePressSave() {
+	settings.Set(settings.SetConfig, settings.KeyOmxplayerCommand, command)
+	parentScreenSwitchPage("explorer")
+}
+
+func handlePressCancel() {
+	parentScreenSwitchPage("explorer")
 }
