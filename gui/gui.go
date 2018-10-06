@@ -24,13 +24,13 @@ func Init() {
 	pages.AddPage("explorer", explorer.UI(redraw), true, true)
 	pages.AddPage("history", history.UI(redraw), true, false)
 	pages.AddPage("help", help.UI(), true, false)
-	pages.AddPage("settingsform", settingsform.UI(), true, false)
+	pages.AddPage("settingsform", settingsform.UI(redraw), true, false)
 	activePage = "explorer"
 
 	explorer.StartExplorer()
 	history.StartHistory()
 
-	app.SetInputCapture(exitHandler)
+	app.SetInputCapture(eventHandler)
 	if err := app.SetRoot(pages, true).SetFocus(pages).Run(); err != nil {
 		panic(err)
 	}
@@ -41,7 +41,7 @@ func switchToPage(page string) {
 	pages.SwitchToPage(page)
 }
 
-func exitHandler(eventKey *tcell.EventKey) *tcell.EventKey {
+func eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 
 	if eventKey.Rune() == 'q' {
 		app.Stop()
