@@ -13,7 +13,9 @@ Xterm is not required, but is recommended so that omxplayer gains keyboard focus
 ### Installation
 
 ```
-go get github.com/destinmoulton/pixi
+git clone https://github.com/destinmoulton/pixi.git
+cd pixi
+go install pixi.go
 ```
 
 ### Configuring the Video Player
