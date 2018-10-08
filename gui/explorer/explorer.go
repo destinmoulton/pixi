@@ -70,7 +70,12 @@ func renderFileList() {
 	items := getPrettyList()
 
 	for i, item := range items {
-		tableWidget.SetCell(i, 0, tview.NewTableCell(item.filename).SetTextColor(item.fgColor).SetBackgroundColor(item.bgColor))
+		cell := tview.NewTableCell(item.filename).
+			SetTextColor(item.fgColor).
+			SetBackgroundColor(item.bgColor).
+			SetExpansion(2)
+
+		tableWidget.SetCell(i, 0, cell)
 	}
 
 	tableWidget.Select(0, 0).SetSelectable(true, false)
