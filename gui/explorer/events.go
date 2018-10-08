@@ -15,6 +15,13 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 		return eventKey
 	}
 
+	if eventKey.Key() == tcell.KeyF5 || eventKey.Key() == tcell.KeyCtrlR {
+		populateDirList()
+		renderFileList()
+		uiScrollToTop()
+		return eventKey
+	}
+
 	if eventKey.Rune() == 'h' {
 		switchToPage("history")
 		return eventKey
