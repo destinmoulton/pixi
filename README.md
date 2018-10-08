@@ -1,6 +1,6 @@
 ### Pixi
 
-Pixi is a simple CLI file browser and video player. Pixi was built to browse and play videos on a Raspberry Pi, but it should be compatible with any flavor of linux. The default video player is omxplayer, but is easily configurable.
+Pixi is a simple CLI file browser and video player. Pixi was built to browse and play videos on a Raspberry Pi, but it should be compatible with any flavor of linux. The default video player is omxplayer, but is easily configurable to whatever your platform supports.
 
 ### Requirements
 
@@ -32,8 +32,8 @@ The video player can be configured on the Settings screen. Launch pixi and press
 | c              | Clear history of played files (when history open) |
 | s              | Open player settings                              |
 | \>/.           | Toggle viewing hidden files                       |
+| F5/Ctrl+r      | Refresh the list of files                         |
 | q/Ctrl+c       | Quit pixi                                         |
-
 
 ### Debugging
 
