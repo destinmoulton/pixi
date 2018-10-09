@@ -21,7 +21,7 @@ var tableWidget *tview.Table
 
 // StartHistory initializes the history viewer
 func StartHistory() {
-	LoadCurrentHistory()
+	loadCurrentHistory()
 	renderHistory()
 }
 
@@ -53,12 +53,13 @@ func renderHistory() {
 	redrawParent()
 }
 
-// LoadCurrentHistory gets the played settings
-func LoadCurrentHistory() {
-	opened := settings.Get(settings.SetHistory, "opened")
+// loadCurrentHistory gets the opened files config
+func loadCurrentHistory() {
+
+	opened := settings.Get(settings.SetHistory, "opened").([]interface{})
 
 	if opened != nil {
-		for _, file := range opened.([]interface{}) {
+		for _, file := range opened {
 			// Convert the returned interface (from JSON) into usable map
 			tmp := make(viewedFile)
 			tmp["filename"] = file.(map[string]interface{})["filename"].(string)
