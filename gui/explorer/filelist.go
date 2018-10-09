@@ -93,7 +93,7 @@ func getPrettyList() []tpretty {
 }
 
 func colorifyDirList() {
-	history.LoadCurrentHistory()
+
 	for _, file := range filelist.fullInfo {
 		fgColor := tcell.ColorWhite
 		bgColor := tcell.ColorBlack
