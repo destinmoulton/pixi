@@ -21,7 +21,7 @@ var tableWidget *tview.Table
 
 // StartHistory initializes the history viewer
 func StartHistory() {
-	loadCurrentHistory()
+	LoadCurrentHistory()
 	renderHistory()
 }
 
@@ -53,7 +53,8 @@ func renderHistory() {
 	redrawParent()
 }
 
-func loadCurrentHistory() {
+// LoadCurrentHistory gets the played settings
+func LoadCurrentHistory() {
 	opened := settings.Get(settings.SetHistory, "opened")
 
 	if opened != nil {
