@@ -17,9 +17,7 @@ func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.Ev
 	}
 
 	if eventKey.Key() == tcell.KeyF5 || eventKey.Key() == tcell.KeyCtrlR {
-		populateDirList()
-		renderFileList()
-		uiScrollToTop()
+		ReRenderExplorer(false)
 		return eventKey
 	}
 
@@ -92,6 +90,7 @@ func performFileAction() {
 	} else if !selectedFile.IsDir() && player.IsVideoFile(selectedFile.Name()) {
 		history.Add(path)
 		player.PlayVideo(path)
+		ReRenderExplorer(false)
 	} else {
 		cmd := exec.Command("xdg-open", path)
 		err := cmd.Run()
@@ -104,6 +103,5 @@ func performFileAction() {
 // toggleHidden enables/disables showing the hidden files (.<filename>)
 func toggleHidden() {
 	shouldShowHidden = !shouldShowHidden
-	populateDirList()
-	renderFileList()
+	ReRenderExplorer(false)
 }

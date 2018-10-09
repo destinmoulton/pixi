@@ -22,14 +22,15 @@ var clockTicker *time.Ticker
 func StartExplorer() {
 	initFileList()
 
-	renderFileList()
+	renderFileList(true)
 	startClock()
 	renderClock(time.Now())
 }
 
-// ReRender re-builds the explorer
-func ReRender() {
-	renderFileList()
+// ReRenderExplorer re-builds the explorer
+func ReRenderExplorer(scrollToTop bool) {
+	populateDirList()
+	renderFileList(scrollToTop)
 }
 
 // UI builds the gui for the explorer list of files
@@ -64,7 +65,7 @@ func setPathWidgetText(text string) {
 	pathWidget.SetText(text)
 }
 
-func renderFileList() {
+func renderFileList(scrollToTop bool) {
 	tableWidget.Clear()
 	redrawParent()
 	items := getPrettyList()
@@ -78,7 +79,10 @@ func renderFileList() {
 		tableWidget.SetCell(i, 0, cell)
 	}
 
-	tableWidget.Select(0, 0).SetSelectable(true, false)
+	tableWidget.SetSelectable(true, false)
+	if scrollToTop {
+		tableWidget.Select(0, 0)
+	}
 	redrawParent()
 }
 

@@ -7,9 +7,10 @@ import (
 )
 
 // HandleEvents dispatches events for the history widget
-func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string)) *tcell.EventKey {
+func HandleEvents(eventKey *tcell.EventKey, switchToPage func(string), reRenderExplorer func(bool)) *tcell.EventKey {
 	if eventKey.Key() == tcell.KeyEsc || eventKey.Rune() == 'h' || eventKey.Key() == tcell.KeyLeft {
 		switchToPage("explorer")
+		reRenderExplorer(false)
 		return eventKey
 	}
 

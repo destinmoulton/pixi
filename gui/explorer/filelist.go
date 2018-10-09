@@ -45,10 +45,8 @@ func initFileList() {
 func changeDirectory(path string) {
 	if isDirectoryReadable(path) {
 		setCurrentPath(path)
-		populateDirList()
-
 		setPathWidgetText(path)
-		renderFileList()
+		ReRenderExplorer(true)
 	}
 }
 
