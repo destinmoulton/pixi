@@ -53,7 +53,7 @@ func eventHandler(eventKey *tcell.EventKey) *tcell.EventKey {
 	}
 
 	if activePage == "history" {
-		return history.HandleEvents(eventKey, switchToPage)
+		return history.HandleEvents(eventKey, switchToPage, explorer.ReRenderExplorer)
 	}
 
 	if activePage == "explorer" {
