@@ -12,6 +12,7 @@ import (
 
 	"../../player"
 	"../../settings"
+	"../history"
 )
 
 var currentPath string
@@ -92,14 +93,17 @@ func getPrettyList() []tpretty {
 }
 
 func colorifyDirList() {
+	history.LoadCurrentHistory()
 	for _, file := range filelist.fullInfo {
 		fgColor := tcell.ColorWhite
 		bgColor := tcell.ColorBlack
-
+		path := path.Join(currentPath, file.Name())
 		if file.IsDir() {
 			fgColor = tcell.ColorYellow
-		} else if player.IsVideoFile(file.Name()) {
+		} else if history.IsFileInHistory(path) {
 			fgColor = tcell.ColorDarkMagenta
+		} else if player.IsVideoFile(file.Name()) {
+			fgColor = tcell.ColorGreenYellow
 		}
 
 		data := tpretty{file.Name(), fgColor, bgColor}
