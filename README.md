@@ -2,13 +2,21 @@
 
 Pixi is a simple CLI file browser and video player. Pixi was built to browse and play videos on a Raspberry Pi, but it should be compatible with any flavor of linux. The default video player is omxplayer, but is easily configurable to whatever your platform supports.
 
+### Features
+
+- Navigate folders in an intuitive manner (inspired by [nnn](https://github.com/jarun/nnn))
+- Play video files
+- Video player history 
+- Edit video player command
+- Open other files (uses xdg-open)
+
 ### Requirements
 
 -   go 1.10
 -   omxplayer
 -   xterm\*
 
-Xterm is not required, but is recommended so that omxplayer gains keyboard focus when a video is played.
+\*Xterm is not required, but is recommended so that omxplayer gains keyboard focus when a video is played.
 
 ### Installation
 
