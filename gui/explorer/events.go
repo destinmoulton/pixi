@@ -1,6 +1,7 @@
 package explorer
 
 import (
+	"os/exec"
 	"path"
 
 	"../../player"
@@ -91,6 +92,12 @@ func performFileAction() {
 	} else if !selectedFile.IsDir() && player.IsVideoFile(selectedFile.Name()) {
 		history.Add(path)
 		player.PlayVideo(path)
+	} else {
+		cmd := exec.Command("xdg-open", path)
+		err := cmd.Run()
+		if err != nil {
+
+		}
 	}
 }
 
