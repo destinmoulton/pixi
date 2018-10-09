@@ -67,6 +67,16 @@ func loadCurrentHistory() {
 	}
 }
 
+// IsFileInHistory checks if a path is in the history
+func IsFileInHistory(path string) bool {
+	for _, file := range history {
+		if file["path"] == path {
+			return true
+		}
+	}
+	return false
+}
+
 func clearHistory() {
 	history = make(viewedHistory, 0)
 	renderHistory()
