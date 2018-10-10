@@ -19,6 +19,7 @@ var currentPath string
 
 type tpretty struct {
 	filename string
+	size     int64
 	fgColor  tcell.Color
 	bgColor  tcell.Color
 }
@@ -104,7 +105,7 @@ func colorifyDirList() {
 			fgColor = tcell.ColorGreenYellow
 		}
 
-		data := tpretty{file.Name(), fgColor, bgColor}
+		data := tpretty{file.Name(), file.Size(), fgColor, bgColor}
 		filelist.pretty = append(filelist.pretty, data)
 	}
 }
