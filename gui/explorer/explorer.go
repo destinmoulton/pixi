@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/rivo/tview"
+
+	"../../util"
 )
 
 var redrawParent func()
@@ -71,12 +73,19 @@ func renderFileList(scrollToTop bool) {
 	items := getPrettyList()
 
 	for i, item := range items {
-		cell := tview.NewTableCell(item.filename).
+		cellName := tview.NewTableCell(item.filename).
 			SetTextColor(item.fgColor).
 			SetBackgroundColor(item.bgColor).
 			SetExpansion(2)
 
-		tableWidget.SetCell(i, 0, cell)
+		cellSize := tview.NewTableCell(util.HumanReadableBytes(item.size, "")).
+			SetTextColor(item.fgColor).
+			SetBackgroundColor(item.bgColor).
+			SetExpansion(0).
+			SetAlign(tview.AlignRight)
+
+		tableWidget.SetCell(i, 0, cellName)
+		tableWidget.SetCell(i, 1, cellSize)
 	}
 
 	tableWidget.SetSelectable(true, false)
