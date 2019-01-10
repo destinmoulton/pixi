@@ -56,9 +56,9 @@ func renderHistory() {
 // loadCurrentHistory gets the opened files config
 func loadCurrentHistory() {
 
-	opened := settings.Get(settings.SetHistory, "opened").([]interface{})
-
-	if opened != nil {
+	// type switch in case this is the first load and history doesn't exist
+	switch opened := settings.Get(settings.SetHistory, "opened").(type) {
+	case []interface{}:
 		for _, file := range opened {
 			// Convert the returned interface (from JSON) into usable map
 			tmp := make(viewedFile)
@@ -67,6 +67,7 @@ func loadCurrentHistory() {
 			history = append(history, tmp)
 		}
 	}
+
 }
 
 // IsFileInHistory checks if a path is in the history
