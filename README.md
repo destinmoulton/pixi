@@ -1,14 +1,14 @@
 ### Pixi
 
-Pixi is a simple CLI file browser and video player. Pixi was built to browse and play videos on a Raspberry Pi, but it should be compatible with any flavor of linux. The default video player is omxplayer, but is easily configurable to whatever your platform supports.
+Pixi is a simple CLI file browser and video player. Pixi was built to browse and play videos on a Raspberry Pi but it should be compatible with any flavor of Linux. The default video player is omxplayer but is easily configurable to whatever your platform supports.
 
 ### Features
 
-- Navigate folders in an intuitive manner (inspired by [nnn](https://github.com/jarun/nnn))
-- Play video files
-- Video player history 
-- Edit video player command
-- Open other files (uses xdg-open)
+* Intuitive keyboard navigation
+* Colored file list
+* History of played files with color indication in file list
+* Easily show/hide hidden "." files
+* Configure the omxplayer command (ie add/remove xterm or change audio output options) 
 
 ### Requirements
 
@@ -16,13 +16,22 @@ Pixi is a simple CLI file browser and video player. Pixi was built to browse and
 -   omxplayer
 -   xterm\*
 
-\*Xterm is not required, but is recommended so that omxplayer gains keyboard focus when a video is played.
+\*NOTE: `xterm` is not required, but is recommended so that `omxplayer` gains keyboard focus when a video is played. To remove the `xterm` requirement, hit 's' when `pixi` is open and remove everything before the word `omxplayer`.
 
 ### Installation
 
 ```
 git clone https://github.com/destinmoulton/pixi.git
 cd pixi
+```
+
+Install the project dependencies:
+```
+go get ./...
+```
+
+Install the `pixi` binary:
+```
 go install pixi.go
 ```
 
@@ -43,6 +52,7 @@ The video player can be configured on the Settings screen. Launch pixi and press
 | s              | Open player settings                              |
 | \>/.           | Toggle viewing hidden files                       |
 | F5/Ctrl+r      | Refresh the list of files                         |
+| F1             | Help                                              |
 | q/Ctrl+c       | Quit pixi                                         |
 
 ### Debugging
